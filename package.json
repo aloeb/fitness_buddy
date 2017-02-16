@@ -1,0 +1,15 @@
+{
+  "name": "fitness_buddy",
+  "version": "1.0.0",
+  "description": "Purdue specific fitness assistant webapp.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"There are no tests yet!\"",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
