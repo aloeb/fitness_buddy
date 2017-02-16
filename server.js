@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(__dirname + '/client'));
 app.use(passport.initialize())
-app.use('/api/v1', require('./router'));
+app.use('/api/v1', require('./api'));
 
 // Get the port
 var port = process.env.PORT || 8081;

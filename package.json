@@ -10,6 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.1"
-  }
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.3",
+    "passport": "^0.3.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aloeb/fitness_buddy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aloeb/fitness_buddy/issues"
+  },
+  "homepage": "https://github.com/aloeb/fitness_buddy"
 }
