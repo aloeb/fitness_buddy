@@ -1,19 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var DropboxOAuth2Strategy = require('passport-dropbox-oauth2').Strategy;
-var OneDriveStrategy = require('passport-onedrive').Strategy;
 
 // Config
 var conf = require('../config.js');
 
 // Models
 var User = require('../models/user');
-
-// Create facebook strategy
-passport.use(new FacebookOAuthStrategy????????
-));
 
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
@@ -25,6 +18,15 @@ router.use((req, res, next) => {
         })
     }
 });
+
+// These don't work yet, but they will be how we login with facebook
+router.route('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+
+router.route('/auth/facebook/callback',
+        passport.authenticate('facebook', {
+            successRedirect : '/profile',
+            failureRedirect : '/'
+        }));
 
 // EXAMPLE CREATE ACCOUNT ROUTE. Will need to be changed
 router.route('/users/create_account').post((req, res) => {

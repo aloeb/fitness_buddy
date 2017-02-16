@@ -4,9 +4,6 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
-// MODELS
-var Directory = require('./models/directory');
-
 // MONGO
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/cloudview');
