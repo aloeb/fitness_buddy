@@ -9,6 +9,18 @@ var conf = require('../config.js');
 // Models
 var User = require('../models/user');
 
+// Extra files
+var corec_data = require('./corec.js')
+/* TO GET COREC USAGE DATA AS JSON OBJ:
+
+corec_data.get_current_usage(
+    (arg) => {
+        console.log(arg)
+        next()
+    }
+);
+*/
+
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
     if (req.url.substring(0,14) === '/auth/facebook') {
@@ -73,13 +85,13 @@ router.route('/auth/facebook/callback').get(
                             });
                         }
                         else {
-                            res.status(200).redirect('/?id=' + user_id);
+                            res.status(200).redirect('/?token=' + user_id);
                         }
                     });
                 }
                 else {
                     // Account already exists, so we're done
-                    res.status(200).redirect('/?id=' + user_id);
+                    res.status(200).redirect('/?token=' + user_id);
                 }
             });
         });
