@@ -2,12 +2,14 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // Config
 var conf = require('../config.js');
 
 // Models
 var User = require('../models/user');
+var Calendar = require('../models/calendar');
 
 // Extra files
 var corec_data = require('./corec.js')
@@ -27,6 +29,9 @@ router.use((req, res, next) => {
         next();
     } else {
         var user_id = req.body.token;
+        if (!user_id) {
+            user_id = req.query.state
+        }
         User.findOne({ 'fb_id': user_id}, (err, user) => {
             if (err) {
                 res.status(403).json({
@@ -61,6 +66,7 @@ router.route('/auth/facebook').get(passport.authenticate('facebook'));
 
 router.route('/auth/facebook/callback').get(
     passport.authenticate('facebook', {
+        failureRedirect: '/',
         session: false
     }),
     (req, res) => {
@@ -96,5 +102,106 @@ router.route('/auth/facebook/callback').get(
         });
     }
 );
+
+
+
+
+
+
+
+/*
+
+BEGIN CALENDAR STUFF
+
+WIP - Adam L
+
+This should store google calendar credentials in the db.
+
+Go to .../api/v1/users/auth_google?state=<user_token> to put user in workflow
+
+*/
+
+
+
+// Auth Google Strategy
+passport.use(new GoogleStrategy({
+        clientID: conf.GOOG_APP_ID,
+        clientSecret: conf.GOOG_APP_SECRET,
+        callbackURL: 'http://localhost:8081/api/v1/users/auth_google/callback'
+    },
+    function(accessToken, refreshToken, params, profile, done) {
+        var userInfo = {
+            accountId: profile.id,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiry: params.expires_in*1000 + new Date().getTime()
+        };
+        return done(null, userInfo);
+    }
+));
+
+router.route('/users/auth_google').get((req, res, next) => {
+    passport.authenticate('google', {
+        scope: ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/plus.login'],
+        accessType: 'offline',
+        approvalPrompt: 'force',
+        state: req.query.state
+    })(req, res, next);
+});
+
+router.route('/users/auth_google/callback').get(
+    passport.authenticate('google',
+        { 
+            failureRedirect: '/',
+            session: false
+        }
+    ),
+    (req, res) => {
+        var userInfo = req.user;
+
+        User.findOne({ 'fb_id': req.query.state }, function(err, user) {
+            if (err) {
+                res.status(403).json({
+                    Error: err
+                });
+            }
+            else {
+                var newGoogleAccount = Calendar();
+                newGoogleAccount.source = 'google';
+                newGoogleAccount.accountId = userInfo.accountId;
+                newGoogleAccount.accessToken = userInfo.accessToken;
+                newGoogleAccount.refreshToken = userInfo.refreshToken;
+                newGoogleAccount.expiry = userInfo.expiry;
+
+                newGoogleAccount.save(function(err) {
+                    if (err) {
+                        res.status(403).json({
+                            Error: err
+                        });
+                    }
+                    else {
+                        user.calendar = newGoogleAccount;
+                        user.save(function(err) {
+                            if (err) {
+                                res.status(403).json({
+                                    Error: err
+                                });
+                            } else {
+                                //res.json({success: true});
+                                res.status(200).redirect('/');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        /*res.json({
+            message: 'Successfully authenticated with google drive'
+        });*/
+    }
+);
+
+
 
 module.exports = router;

@@ -1,20 +1,11 @@
 var mongoose = require('mongoose');
 
-var CalendarSchema = new mongoose.Schema({
-    // Account id
-    accountId: { type: String, required: true },
-
-    // Access token
-    accessToken: { type: String, required: true },
-
-    // Source (always Google probably)
-    source: String,
-
-    // Optional Refresh Token
-    refreshToken: String,
-
-    // Optional expiry time of token
-    expiry: Number
+var ExerciseSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  completed: Boolean,
+  gym_area: String,
+  type: String
 });
 
-module.exports = mongoose.model('Calendar', CalendarSchema);
+module.exports = mongoose.model('Exercise', ExerciseSchema);
