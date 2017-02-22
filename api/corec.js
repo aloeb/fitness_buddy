@@ -39,14 +39,25 @@ corec.create_workout = function(user_id, workout, cb) {
 	});
 }
 
-corec.create_exercise = function(user_id, workout, cb) {
-	// WIP
+corec.create_exercise = function(user_id, exercise, cb) {
 	User.findOne({ 'fb_id': user_id}, (err, user) => {
 		if (err) {
 			cb(false)
 			return
 		}
-		
+		var ex = Exercise()
+		ex.name = exercise.name
+		ex.description = exercise.description
+		ex.gym_area = exercise.area
+		ex.type = exercise.type
+		ex.popularity = 0
+		ex.save((err) => {
+			if (err) {
+                cb(false)
+            } else {
+                cb(true)
+            }
+		})
 	});
 }
 

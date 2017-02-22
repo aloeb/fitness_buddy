@@ -137,7 +137,10 @@ router.route('/users/create_workout').post((req, res) => {
 /*
 Takes object of form:
 {
-    
+    name: <exercise_name>,
+    description: <exercise_description_or_instructions>,
+    area: <part_of_corec>,
+    type: <type_of_workout_maybe_like_legs_or_bicepts>
 }
 */
 router.route('/users/create_exercise').post((req, res) => {
