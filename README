@@ -18,3 +18,9 @@ get a client_secret.json file. Put this in the main
 fitness_buddy directory.
 
 https://developers.google.com/google-apps/calendar/quickstart/nodejs
+
+You also need to setup a facebook app and put the app id 
+and secret in config.js in the home fitness_buddy directory.
+
+Go to https://developers.facebook.com and create an app and all.
+The secret/id will be under settings.
