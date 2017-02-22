@@ -1,5 +1,10 @@
 var https = require('https')
 
+var mongoose = require('mongoose');
+var User = require('../models/user');
+var Workout = require('../models/workout');
+var Exercise = require('../models/exercise');
+
 var corec = new Object()
 
 corec.get_current_usage = function(cb) {
@@ -10,6 +15,39 @@ corec.get_current_usage = function(cb) {
 			    cb(JSON.parse(data));
 			});
 		});
+}
+
+corec.create_workout = function(user_id, workout, cb) {
+	User.findOne({ 'fb_id': user_id}, (err, user) => {
+		if (err) {
+			cb(false)
+			return
+		}
+		var wo = Workout()
+		wo.completed_on = workout.date
+		wo.exercises = []
+		for i = 0; i < workout.exercises.length; i++) {
+			wo.exercises.push(mongoose.Types.ObjectId(workout.exercises[i]))
+		}
+		wo.save((err) => {
+            if (err) {
+                cb(false)
+            } else {
+                cb(true)
+            }
+        });
+	});
+}
+
+corec.create_exercise = function(user_id, workout, cb) {
+	// WIP
+	User.findOne({ 'fb_id': user_id}, (err, user) => {
+		if (err) {
+			cb(false)
+			return
+		}
+		
+	});
 }
 
 module.exports = corec

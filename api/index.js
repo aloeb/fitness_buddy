@@ -105,7 +105,50 @@ router.route('/auth/facebook/callback').get(
 );
 
 
+/*
 
+BEGIN WORKOUT STUFF
+
+WIP - Adam L
+
+*/
+
+/*
+Takes object of form:
+{
+    date: <date_completed_or_scheduled>,
+    exercises: [
+        <mongo_id_of_first_exercise>,
+        <mongo_id_of_second_exercise>,
+        ...
+    ]
+}
+*/
+router.route('/users/create_workout').post((req, res) => {
+    corec.create_workout(req.token, req.body.workout, (success) => {
+        if (success) {
+            res.status(200)
+        } else {
+            res.status(96)
+        }
+    });
+});
+
+/*
+Takes object of form:
+{
+    
+}
+*/
+router.route('/users/create_exercise').post((req, res) => {
+    corec.create_exercise(req.token, req.body.workout, (success) => {
+        if (success) {
+            res.status(200)
+        } else {
+            res.status(96)
+        }
+    });
+});
 
 
 
