@@ -46,6 +46,7 @@ router.use((req, res, next) => {
             }
             else {
                 // Account already exists
+                req.token = user_id
                 next()
             }
         });
@@ -143,7 +144,7 @@ router.route('/users/auth_google').get((req, res, next) => {
         scope: ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/plus.login'],
         accessType: 'offline',
         approvalPrompt: 'force',
-        state: req.query.state
+        state: req.token
     })(req, res, next);
 });
 
@@ -208,7 +209,7 @@ WIP - Adam L
 */
 
 router.route('/users/get_calendar').post((req, res) => {
-    calendar_data.get_user_calendar(req.query.state, (events) => {
+    calendar_data.get_user_calendar(req.token, (events) => {
         res.json({ 'events': events });
     });
 })
