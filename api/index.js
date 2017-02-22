@@ -62,7 +62,6 @@ passport.use(new FacebookStrategy({
     }
 ));
 
-// These don't work yet, but they will be how we login with facebook
 router.route('/auth/facebook').get(passport.authenticate('facebook'));
 
 router.route('/auth/facebook/callback').get(
@@ -121,8 +120,6 @@ This should store google calendar credentials in the db.
 Go to .../api/v1/users/auth_google?state=<user_token> to put user in workflow
 
 */
-
-
 
 // Auth Google Strategy
 passport.use(new GoogleStrategy({
@@ -202,6 +199,19 @@ router.route('/users/auth_google/callback').get(
         });*/
     }
 );
+
+/*
+NOW ACTUAL GETTING CALENDAR STUFF
+
+WIP - Adam L
+
+*/
+
+router.route('/users/get_calendar').post((req, res) => {
+    calendar_data.get_user_calendar(req.query.state, (events) => {
+        res.json({ 'events': events });
+    });
+})
 
 
 
