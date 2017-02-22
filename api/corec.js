@@ -61,4 +61,15 @@ corec.create_exercise = function(user_id, exercise, cb) {
 	});
 }
 
+corec.get_exercises = function(filters, cb) {
+	var query = {}
+	Exercise.find(query, (err, exercises) => {
+		if (err) {
+			cb([])
+		} else {
+			cb(exercises)
+		}
+	});
+}
+
 module.exports = corec

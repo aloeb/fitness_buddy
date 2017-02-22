@@ -114,7 +114,7 @@ WIP - Adam L
 */
 
 /*
-Takes object of form:
+Takes object of form as body parameter "workout":
 {
     date: <date_completed_or_scheduled>,
     exercises: [
@@ -135,7 +135,7 @@ router.route('/users/create_workout').post((req, res) => {
 });
 
 /*
-Takes object of form:
+Takes object of form as body parameter "exercise":
 {
     name: <exercise_name>,
     description: <exercise_description_or_instructions>,
@@ -144,12 +144,22 @@ Takes object of form:
 }
 */
 router.route('/users/create_exercise').post((req, res) => {
-    corec.create_exercise(req.token, req.body.workout, (success) => {
+    corec.create_exercise(req.token, req.body.exercise, (success) => {
         if (success) {
             res.status(200)
         } else {
             res.status(96)
         }
+    });
+});
+
+/*
+Will have ability to take parameters to filter, but for now
+returns all exercises.
+*/
+router.route('/users/get_exercises').post((req, res) => {
+    corec.get_exercises(null, (exercises) => {
+        res.status(200).json(exercises)
     });
 });
 
