@@ -13,6 +13,7 @@ var Calendar = require('../models/calendar');
 
 // Extra files
 var corec_data = require('./corec.js')
+var calendar_data = require('./calendar.js')
 /* TO GET COREC USAGE DATA AS JSON OBJ:
 
 corec_data.get_current_usage(

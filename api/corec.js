@@ -7,7 +7,7 @@ corec.get_current_usage = function(cb) {
 		(res) => {
 			res.setEncoding('utf8');
 			res.on('data', function (data) {
-			    cb(JSON.parse(data)); // I can't parse it because, it's a string. why?
+			    cb(JSON.parse(data));
 			});
 		});
 }
