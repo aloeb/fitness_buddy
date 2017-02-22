@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 
 // MONGO
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/cloudview');
+mongoose.connect('mongodb://localhost:27017/fitness_buddy');
 
 // Create the app
 var app = express();
