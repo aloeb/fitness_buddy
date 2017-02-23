@@ -26,7 +26,7 @@ corec.create_workout = function(user_id, workout, cb) {
 		var wo = Workout()
 		wo.completed_on = workout.date
 		wo.exercises = []
-		for i = 0; i < workout.exercises.length; i++) {
+		for (i = 0; i < workout.exercises.length; i++) {
 			wo.exercises.push(mongoose.Types.ObjectId(workout.exercises[i]))
 		}
 		wo.save((err) => {
@@ -36,6 +36,18 @@ corec.create_workout = function(user_id, workout, cb) {
                 cb(true)
             }
         });
+	});
+}
+
+corec.get_workouts = function(user_id, cb) {
+	User.findOne({ 'fb_id': user_id })
+		.populate('workouts')
+		.exec((err, user) => {
+		if (err) {
+			cb([])
+			return
+		}
+		cb(user.workouts)
 	});
 }
 

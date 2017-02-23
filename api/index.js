@@ -154,6 +154,16 @@ router.route('/users/create_exercise').post((req, res) => {
 });
 
 /*
+Get's all past and future completed and scheduled workouts 
+for a particular user.
+*/
+router.route('/users/get_workouts').post((req, res) => {
+    corec.get_workouts(req.token, (workouts) => {
+        res.status(200).json(workouts)
+    });
+})
+
+/*
 Will have ability to take parameters to filter, but for now
 returns all exercises.
 */
