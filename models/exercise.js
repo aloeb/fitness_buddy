@@ -5,7 +5,8 @@ var ExerciseSchema = new mongoose.Schema({
   description: String,
   gym_area: String,
   type: String,
-  popularity: Number
+  popularity: Number,
+  creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 module.exports = mongoose.model('Exercise', ExerciseSchema);

@@ -51,6 +51,7 @@ corec.create_exercise = function(user_id, exercise, cb) {
 		ex.gym_area = exercise.area
 		ex.type = exercise.type
 		ex.popularity = 0
+		ex.creator = user._id
 		ex.save((err) => {
 			if (err) {
                 cb(false)
