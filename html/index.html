@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Fitness Buddy</title>
+    <!-- Path to Framework7 Library CSS-->
+    <!-- TODO: before hosted clean up all reference links (here, schedule.htm and corec.htm), decide wether to use CDNs or not and add everything to bower for local usage -->
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/framework7-icons.css">
+    <link rel="stylesheet" href="css/kitchen-sink.css">
+    <!-- Path to custom styles-->
+    <!-- TODO: clean up all the css, it's a mess between mine and Logans -->
+    <!-- IMPORTANT! Demo has some custom styles applied via chrome inspector to fix the viewing scroll bugs, these need to actually be fixed permanettly-->
+    <link rel="stylesheet" href="css/my-app.css">
+  </head>
+  <body>
+	<div class="statusbar-overlay"></div>      
+      <div class="views tabs toolbar-through">
+         <div id="view-1" class="view view-main tab active">
+         <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">Fitness Buddy</div>
+          </div>
+        </div>
+            <div class="pages navbar-through toolbar-through">
+               <div data-page="main" class="page">
+                  <div class="page-content">
+                  <!-- IMPORTANT! TODO: before this is hosted see if we need to attribute these images. Logan has the links to the free photostock site-->
+                     <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/1.png); height:50vw; padding:70px 90px" valign="bottom" class="card-header color-white no-border">10 MINUTES</div>
+     				</div></a>
+                     <div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/2.png); height:50vw; padding:70px 115px" valign="bottom" class="card-header color-white no-border">ABS</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/3.png); height:50vw; padding:70px 100px" valign="bottom" class="card-header color-white no-border">CARDIO</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/4.png); height:50vw; padding:70px 80px" valign="bottom" class="card-header color-white no-border">UPPER BODY</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/5.png); height:50vw; padding:70px 120px" valign="bottom" class="card-header color-white no-border">BUTT</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/7.png); height:50vw; padding:70px 80px" valign="bottom" class="card-header color-white no-border">BODY BUILDING</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/8.png); height:50vw; padding:70px 100px" valign="bottom" class="card-header color-white no-border">BURN FAT</div>
+     				</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="view-9" class="view view-main tab active">
+         <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">Fitness Buddy</div>
+          </div>
+        </div>
+            <div class="pages navbar-through toolbar-through">
+               <div data-page="main" class="page">
+                  <div class="page-content">
+                  <iframe width="100%" height="315" src="https://www.youtube.com/embed/08Bi8hMdwa4?rel=0&amp;controls=0" frameborder="0" allowfullscreen></iframe>
+                     <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/1.png); height:50vw; padding:70px 90px" valign="bottom" class="card-header color-white no-border">10 MINUTES</div>
+     				</div></a>
+                     <div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/2.png); height:50vw; padding:70px 115px" valign="bottom" class="card-header color-white no-border">ABS</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/3.png); height:50vw; padding:70px 100px" valign="bottom" class="card-header color-white no-border">CARDIO</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/4.png); height:50vw; padding:70px 80px" valign="bottom" class="card-header color-white no-border">UPPER BODY</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/5.png); height:50vw; padding:70px 120px" valign="bottom" class="card-header color-white no-border">GLUTS</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/7.png); height:50vw; padding:70px 80px" valign="bottom" class="card-header color-white no-border">BODY BUILDING</div>
+     				</div>
+     				<div class="card ks-card-header-pic">
+        				<div style="background-image:url(img/8.png); height:50vw; padding:70px 100px" valign="bottom" class="card-header color-white no-border">BURN FAT</div>
+     				</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="view-6" class="view tab">
+      <!-- Default view-page layout -->
+
+          <!-- page-content has additional login-screen content -->
+          <div class="login-screen-content">
+            <div class="login-screen-title">Fitness Buddy</div>
+            <!-- Login form -->
+            <form>
+              <div class="list-block">
+                <ul>
+                  <li class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Username</div>
+                      <div class="item-input">
+                        <input type="text" name="username" placeholder="Username">
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Password</div>
+                      <div class="item-input">
+                        <input type="password" name="password" placeholder="Password">
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="#" class="item-link list-button">Sign In</a>
+                  </li>
+                </ul>
+                <div class="list-block-label">Some text with login information.</div>
+              </div>
+                            <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="#" class="item-link list-button"><img src="img/facebook.png" style="width:80%;height:80%;"></a>
+                  </li>
+                </ul>
+              </div>
+                            <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="#" class="item-link list-button"><img src="img/Google.png" style="width:80%;height:80%;"></a>
+                  </li>
+                </ul>
+              </div>
+            </form>
+          </div>
+        </div>
+
+         
+         <div id="view-2" class="view tab">
+            <div class="navbar">
+               <div class="navbar-inner">
+                  <div class="center sliding">Fitness Buddy</div>
+               </div>
+            </div>
+            <div class="pages navbar-through">
+               <div data-page="index-2" class="page">
+                  <div class="page-content">
+                     <div class="list-block">
+                        <ul>
+                           <li>
+                              <a href="about.html" class="item-link">
+                                 <div class="item-content">
+                                    <div class="item-inner">
+                                       <div class="item-title">Co-Rec</div>
+                                    </div>
+                                 </div>
+                              </a>
+                           </li>
+                           <li>
+                              <a href="services.html" class="item-link">
+                                 <div class="item-content">
+                                    <div class="item-inner">
+                                       <div class="item-title">My Schedule</div>
+                                    </div>
+                                 </div>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="view-3" class="view tab">
+            <div class="pages">
+               <div data-page="index-3" class="page">
+                  <div class="page-content">
+                     <div class="content-block-title">Another plain static view</div>
+                     <div class="content-block">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel commodo massa, eu adipiscing mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus ultricies dictum neque, non varius tortor fermentum at. Curabitur auctor cursus imperdiet. Nam molestie nisi nec est lacinia volutpat in a purus. Maecenas consectetur condimentum viverra. Donec ultricies nec sem vel condimentum. Phasellus eu tincidunt enim, sit amet convallis orci. Vestibulum quis fringilla dolor. </p>
+                        <p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel commodo massa, eu adipiscing mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus ultricies dictum neque, non varius tortor fermentum at. Curabitur auctor cursus imperdiet. Nam molestie nisi nec est lacinia volutpat in a purus. Maecenas consectetur condimentum viverra. Donec ultricies nec sem vel condimentum. Phasellus eu tincidunt enim, sit amet convallis orci. Vestibulum quis fringilla dolor. </p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="view-4" class="view tab">
+            <div class="pages navbar-fixed">
+               <div data-page="index-4" class="page">
+                  <div class="navbar">
+                     <div class="navbar-inner">
+                        <div class="center">Settings</div>
+                     </div>
+                  </div>
+                  <div class="page-content">
+                     <div class="list-block">
+                        <ul>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Name</div>
+                                    <div class="item-input">
+                                       <input type="text" placeholder="Your name">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-email"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">E-mail</div>
+                                    <div class="item-input">
+                                       <input type="email" placeholder="E-mail">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-url"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">URL</div>
+                                    <div class="item-input">
+                                       <input type="url" placeholder="URL">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Password</div>
+                                    <div class="item-input">
+                                       <input type="password" placeholder="Password">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-tel"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Phone</div>
+                                    <div class="item-input">
+                                       <input type="tel" placeholder="Phone">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-gender"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Gender</div>
+                                    <div class="item-input">
+                                       <select>
+                                          <option>Male</option>
+                                          <option>Female</option>
+                                       </select>
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-calendar"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Birth date</div>
+                                    <div class="item-input">
+                                       <input type="date" placeholder="Birth day" value="2014-04-30">
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Switch</div>
+                                    <div class="item-input">
+                                       <label class="label-switch">
+                                          <input type="checkbox">
+                                          <div class="checkbox"></div>
+                                       </label>
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="item-content">
+                                 <div class="item-media"><i class="icon icon-form-settings"></i></div>
+                                 <div class="item-inner">
+                                    <div class="item-title label">Slider</div>
+                                    <div class="item-input">
+                                       <div class="range-slider">
+                                          <input type="range" min="0" max="100" value="50" step="0.1">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                     <div class="content-block">
+                        <p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+            	<a href="#view-1" class="tab-link active"><span class="tabbar-label">Workouts</span></a>
+            	<a href="#view-2" class="tab-link"><span class="tabbar-label">Schedule</span></a>
+            	<a href="#view-6" class="tab-link"><span class="tabbar-label">Settings</span></a>
+<!--             	<a href="#view-4" class="tab-link"> <i class="icon tabbar-demo-icon-4"></i><span class="tabbar-label">Photos</span></a></div> -->
+         </div>
+      </div>
+      
+      
+    
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>
+    <!-- Path to app.js-->
+    <script type="text/javascript" src="js/my-app.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+  </body>
+</html>
