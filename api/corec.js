@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var User = require('../models/user');
 var Workout = require('../models/workout');
 var Exercise = require('../models/exercise');
+var History = require('../models/history');
 
 var corec = new Object()
 
@@ -84,5 +85,23 @@ corec.get_exercises = function(filters, cb) {
 		}
 	});
 }
+
+corec.get_reccomended_time = function(exercise, calender) {
+
+
+}
+
+corec.get_location_usage = function(location) {
+
+History.find({'LocationID':location}, (err, hist) => {
+    if (err) {
+        cb(false)
+        return
+	}
+
+	cb(hist)
+	});
+}
+
 
 module.exports = corec
