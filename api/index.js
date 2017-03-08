@@ -51,7 +51,8 @@ router.use((req, res, next) => {
 passport.use(new FacebookStrategy({
         clientID: conf.FB_APP_ID,
         clientSecret:conf.FB_APP_SECRET,
-        callbackURL: 'http://localhost:8081/api/v1/auth/facebook/callback'
+        callbackURL: 'http://localhost:8081/api/v1/auth/facebook/callback',
+        enableProof: true
     },
     function(accessToken, refreshToken, profile, done) {
         done(null, profile);
