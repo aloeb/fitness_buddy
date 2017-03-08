@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var Historyschema = new mongoose.Schema({
+var HistorySchema = new mongoose.Schema({
     LocationID: String,
     LocationName: String,
     HeadCount: Number,

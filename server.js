@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(express.static(__dirname + '/client'));
+app.use(express.static(__dirname + '/html'));
 app.use(passport.initialize())
 app.use('/api/v1', require('./api'));
 
