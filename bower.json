@@ -1,0 +1,22 @@
+{
+  "name": "fitness_buddy",
+  "description": "Purdue specific fitness assistant webapp.",
+  "main": "server.js",
+  "authors": [
+    "Aaron Gurin (agurin@purdue.edu)",
+    "Logan Estes (estesl@purdue.edu)",
+    "Adam Loeb (aloeb@purdue.edu)",
+    "Adam Hoernschemeyer (ahoerns@purdue.edu)"
+  ],
+  "homepage": "https://github.com/aloeb/fitness_buddy",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "framework7": "^1.5.3"
+  }
+}

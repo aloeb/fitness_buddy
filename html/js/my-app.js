@@ -52,8 +52,8 @@ myApp.onPageInit('afa', function(page){
     window.myLine = new Chart(ctx).Line(lineChartData, {
         responsive: true
     });
-}
-    
+});
+
 // Generate dynamic page
 var dynamicPageIndex = 0;
 function createContentPage() {
@@ -82,4 +82,3 @@ function createContentPage() {
     );
 	return;
 });
-
