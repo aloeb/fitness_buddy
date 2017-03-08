@@ -13,46 +13,57 @@ var view2 = myApp.addView('#view-2', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
-var view9 = myApp.addView('#view-9', {
+var view6 = myApp.addView('#view-6', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
+// var view9 = myApp.addView('#view-9', {
+//     // Because we use fixed-through navbar we can enable dynamic navbar
+//     dynamicNavbar: true
+// });
 
-myApp.onPageInit('afa', function(page){
+myApp.onPageInit('login', function(page){
 //your code for init charts should be there
 	console.log("I'm here");
-    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-    var lineChartData = {
-        labels : ["January","February","March","April","May","June","July"],
-        datasets : [
-            {
-                label: "My First dataset",
-                fillColor : "rgba(220,220,220,0.2)",
-                strokeColor : "rgba(220,220,220,1)",
-                pointColor : "rgba(220,220,220,1)",
-                pointStrokeColor : "#fff",
-                pointHighlightFill : "#fff",
-                pointHighlightStroke : "rgba(220,220,220,1)",
-                data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
-            },
-            {
-                label: "My Second dataset",
-                fillColor : "rgba(151,187,205,0.2)",
-                strokeColor : "rgba(151,187,205,1)",
-                pointColor : "rgba(151,187,205,1)",
-                pointStrokeColor : "#fff",
-                pointHighlightFill : "#fff",
-                pointHighlightStroke : "rgba(151,187,205,1)",
-                data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
-            }
-        ]
-    }
-
-    var ctx = document.getElementById("myChart");
-    window.myLine = new Chart(ctx).Line(lineChartData, {
-        responsive: true
-    });
+    // var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    // var lineChartData = {
+    //     labels : ["January","February","March","April","May","June","July"],
+    //     datasets : [
+    //         {
+    //             label: "My First dataset",
+    //             fillColor : "rgba(220,220,220,0.2)",
+    //             strokeColor : "rgba(220,220,220,1)",
+    //             pointColor : "rgba(220,220,220,1)",
+    //             pointStrokeColor : "#fff",
+    //             pointHighlightFill : "#fff",
+    //             pointHighlightStroke : "rgba(220,220,220,1)",
+    //             data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+    //         },
+    //         {
+    //             label: "My Second dataset",
+    //             fillColor : "rgba(151,187,205,0.2)",
+    //             strokeColor : "rgba(151,187,205,1)",
+    //             pointColor : "rgba(151,187,205,1)",
+    //             pointStrokeColor : "#fff",
+    //             pointHighlightFill : "#fff",
+    //             pointHighlightStroke : "rgba(151,187,205,1)",
+    //             data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+    //         }
+    //     ]
+    // }
+    //
+    // var ctx = document.getElementById("myChart");
+    // window.myLine = new Chart(ctx).Line(lineChartData, {
+    //     responsive: true
+    // });
 });
+angular.module('loginApp', [])
+  .controller('LoginController', function() {
+    console.log("LOGIN");
+    // console.log($username);
+    // console.log($password);
+
+  });
 
 // Generate dynamic page
 var dynamicPageIndex = 0;

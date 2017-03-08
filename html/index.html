@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="loginApp">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/my-app.css">
   </head>
   <body>
-	<div class="statusbar-overlay"></div>      
+	<div class="statusbar-overlay"></div>
       <div class="views tabs toolbar-through">
          <div id="view-1" class="view view-main tab active">
          <div class="navbar">
@@ -56,15 +56,14 @@
                </div>
             </div>
          </div>
-         <div id="view-9" class="view view-main tab active">
+         <!-- <div id="view-9" class="view view-main tab active">
          <div class="navbar">
           <div class="navbar-inner">
-            <!-- We have home navbar without left link-->
             <div class="center sliding">Fitness Buddy</div>
           </div>
         </div>
             <div class="pages navbar-through toolbar-through">
-               <div data-page="main" class="page">
+               <div data-page="main2" class="page">
                   <div class="page-content">
                   <iframe width="100%" height="315" src="https://www.youtube.com/embed/08Bi8hMdwa4?rel=0&amp;controls=0" frameborder="0" allowfullscreen></iframe>
                      <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
@@ -91,8 +90,8 @@
                   </div>
                </div>
             </div>
-         </div>
-         <div id="view-6" class="view tab">
+         </div> -->
+         <div id="view-6" class="view tab" data-page="login" ng-controller="LoginController">
       <!-- Default view-page layout -->
 
           <!-- page-content has additional login-screen content -->
@@ -106,7 +105,7 @@
                     <div class="item-inner">
                       <div class="item-title label">Username</div>
                       <div class="item-input">
-                        <input type="text" name="username" placeholder="Username">
+                        <input type="text" name="username" placeholder="Username" ng-model="username">
                       </div>
                     </div>
                   </li>
@@ -114,7 +113,7 @@
                     <div class="item-inner">
                       <div class="item-title label">Password</div>
                       <div class="item-input">
-                        <input type="password" name="password" placeholder="Password">
+                        <input type="password" name="password" placeholder="Password" ng-model="password">
                       </div>
                     </div>
                   </li>
@@ -123,7 +122,7 @@
               <div class="list-block">
                 <ul>
                   <li>
-                    <a href="#" class="item-link list-button">Sign In</a>
+                    <a href="#" class="item-link list-button" ng-click="login">Sign In</a>
                   </li>
                 </ul>
                 <div class="list-block-label">Some text with login information.</div>
@@ -131,7 +130,7 @@
                             <div class="list-block">
                 <ul>
                   <li>
-                    <a href="#" class="item-link list-button"><img src="img/facebook.png" style="width:80%;height:80%;"></a>
+                    <a href="http://localhost:8081/api/v1/auth/facebook" class="item-link list-button"><img src="img/facebook.png" style="width:80%;height:80%;"></a>
                   </li>
                 </ul>
               </div>
@@ -146,7 +145,7 @@
           </div>
         </div>
 
-         
+
          <div id="view-2" class="view tab">
             <div class="navbar">
                <div class="navbar-inner">
@@ -331,11 +330,12 @@
 <!--             	<a href="#view-4" class="tab-link"> <i class="icon tabbar-demo-icon-4"></i><span class="tabbar-label">Photos</span></a></div> -->
          </div>
       </div>
-      
-      
-    
+
+
+
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="js/framework7.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
     <!-- Path to app.js-->
     <script type="text/javascript" src="js/my-app.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>

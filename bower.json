@@ -17,6 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "framework7": "^1.5.3"
+    "framework7": "^1.5.3",
+    "angular": "angularjs#^1.6.3"
   }
 }
