@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken')
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -29,24 +30,18 @@ router.use((req, res, next) => {
     if (req.url.substring(0,14) === '/auth/facebook') {
         next();
     } else {
-        var user_id = req.body.token;
-        if (!user_id) {
-            user_id = req.query.state
+        var token = req.body.token
+        if (!token) {
+            token = req.query.state
         }
-        User.findOne({ 'fb_id': user_id}, (err, user) => {
+        jwt.verify(token, conf.TOKEN_SECRET, function(err, decoded) {
             if (err) {
-                res.status(403).json({
-                    message: 'Error: Database access'
-                });
-            }
-            else if (user === null) {
                 res.status(403).json({
                     message: 'Error: authentication failed'
                 });
-            }
-            else {
-                // Account already exists
-                req.token = user_id
+            } else {
+                req.id = decoded.id
+                req.token = token
                 next()
             }
         });
@@ -77,28 +72,32 @@ router.route('/auth/facebook/callback').get(
                 res.status(403).json({
                     message: 'Error: Database access'
                 });
-            }
-            else if (user === null) {
-                // Create user
-                var newAccount = User();
-                newAccount.fb_id = user_id;
-                newAccount.name = req.user.displayName;
-
-                newAccount.save((err) => {
-                    if (err) {
-                        res.status(403).json({
-                            error: err,
-                            message: 'Error: Account creation failed'
-                        });
-                    }
-                    else {
-                        res.status(200).redirect('/?token=' + user_id);
-                    }
+            } else {
+                var token = jwt.sign({ id: user_id }, conf.TOKEN_SECRET, {
+                    expiresIn: '30 days'
                 });
-            }
-            else {
-                // Account already exists, so we're done
-                res.status(200).redirect('/?token=' + user_id);
+                if (user === null) {
+                    // Create user
+                    var newAccount = User();
+                    newAccount.fb_id = user_id;
+                    newAccount.name = req.user.displayName;
+
+                    newAccount.save((err) => {
+                        if (err) {
+                            res.status(403).json({
+                                error: err,
+                                message: 'Error: Account creation failed'
+                            });
+                        }
+                        else {
+                            res.status(200).redirect('/?token=' + token);
+                        }
+                    });
+                }
+                else {
+                    // Account already exists, so we're done
+                    res.status(200).redirect('/?token=' + token);
+                }
             }
         });
     }
@@ -125,7 +124,7 @@ Takes object of form as body parameter "workout":
 }
 */
 router.route('/users/create_workout').post((req, res) => {
-    corec.create_workout(req.token, req.body.workout, (success) => {
+    corec_data.create_workout(req.id, req.body.workout, (success) => {
         if (success) {
             res.status(200)
         } else {
@@ -144,7 +143,7 @@ Takes object of form as body parameter "exercise":
 }
 */
 router.route('/users/create_exercise').post((req, res) => {
-    corec.create_exercise(req.token, req.body.exercise, (success) => {
+    corec_data.create_exercise(req.id, req.body.exercise, (success) => {
         if (success) {
             res.status(200)
         } else {
@@ -158,7 +157,7 @@ Get's all past and future completed and scheduled workouts
 for a particular user.
 */
 router.route('/users/get_workouts').post((req, res) => {
-    corec.get_workouts(req.token, (workouts) => {
+    corec_data.get_workouts(req.id, (workouts) => {
         res.status(200).json(workouts)
     });
 })
@@ -168,7 +167,7 @@ Will have ability to take parameters to filter, but for now
 returns all exercises.
 */
 router.route('/users/get_exercises').post((req, res) => {
-    corec.get_exercises(null, (exercises) => {
+    corec_data.get_exercises(null, (exercises) => {
         res.status(200).json(exercises)
     });
 });
@@ -275,7 +274,7 @@ WIP - Adam L
 */
 
 router.route('/users/get_calendar').post((req, res) => {
-    calendar_data.get_user_calendar(req.token, (events) => {
+    calendar_data.get_user_calendar(req.id, (events) => {
         res.json({ 'events': events });
     });
 })
