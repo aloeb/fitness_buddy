@@ -81,4 +81,4 @@ function createContentPage() {
         '</div>'
     );
 	return;
-});
+};
