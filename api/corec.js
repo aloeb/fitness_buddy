@@ -5,6 +5,16 @@ var User = require('../models/user');
 var Workout = require('../models/workout');
 var Exercise = require('../models/exercise');
 var History = require('../models/history');
+var List = require('collections/list');
+
+//connect to mongolab
+mongoose.connect('mongodb://adamh:blue@ds119380.mlab.com:19380/fitnessbuddy');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    // we're connected!
+})
+
 
 var corec = new Object()
 
@@ -86,12 +96,96 @@ corec.get_exercises = function(filters, cb) {
 	});
 }
 
-corec.get_reccomended_time = function(exercise, calender) {
+corec.get_reccomended_time = function(exerciseName, week, cb) {
+	var hists;
+    //array of time recommendations to return in ascending order
+	cb = [];
+	var list = new List([]);
+
+
+    History.find({'LocationID':location}, (err, hist) => {
+        if (err) {
+            cb(false)
+            return
+        }
+
+        hists(hist)
+    });
+
+    //load corec data into week chart
+	var chart = new Array(7);
+	chart[0] = new array(24);
+    chart[1] = new array(24);
+    chart[2] = new array(24);
+    chart[3] = new array(24);
+    chart[4] = new array(24);
+    chart[5] = new array(24);
+    chart[6] = new array(24);
+
+
+    for ( var i =0,len = hists.length; i < len; i++) {
+        var day = hists[i].DayOfWeek;
+        var hour = hists[i].Hour;
+        var headcount = hists[i].HeadCount;
+        chart[day][hour] = headcount;
+
+
+        //use lists for reccs
+		if(week[day][hour] == true) {
+            list.add(hists[i]);
+        }
+    }
+
+    //sort hours by ascending headcount
+    list.sort(function(a,b){return a.HeadCount - b.HeadCount});
+
+    //maybe add .tojson
+	//return first 5 hours with lowest headcounts
+    cb.push(list.shift());
+    cb.push(list.shift());
+    cb.push(list.shift());
+    cb.push(list.shift());
+    cb.push(list.shift());
+
+
+		/*
+
+
+    	//check if new date should be recommended as of right now
+    	if(cb[0] == null){
+            insert(hists[i], 0);
+		}
+
+    	switch(true) {
+    		case headcount< cb[0].headcount: insert(hists[i], 0);
+            case headcount< cb[1].headcount: insert(hists[i], 1);
+            case headcount< cb[2].headcount: insert(hists[i], 2);
+            case headcount< cb[3].headcount: insert(hists[i], 3);
+            case headcount< cb[4].headcount: insert(hists[i], 4);
+
+
+		}
+
+
+	}
+
+	//find 5 least populated times given availability
+
+
+	for(var day =0; day <7; day++){
+    	for(var hour = 0; hour < 24; hour++){
+    		if(week[day][hour] == true){
+				if(chart[day][hour] < )
+			}
+		}
+	}
+	*/
+
 
 
 }
 
-corec.get_location_usage = function(location) {
+corec.get_location_usage = function(location, cb) {
 
 History.find({'LocationID':location}, (err, hist) => {
     if (err) {

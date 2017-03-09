@@ -6,6 +6,7 @@ var Historyschema = new mongoose.Schema({
     HeadCount: Number,
     EntryDate: { type: Date },
     DayOfWeek: Number,
+    Hour: Number,
     DayName: String
 });
 
