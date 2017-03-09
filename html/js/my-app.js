@@ -57,13 +57,33 @@ myApp.onPageInit('login', function(page){
     //     responsive: true
     // });
 });
-angular.module('loginApp', [])
-  .controller('LoginController', function() {
-    console.log("LOGIN");
-    // console.log($username);
-    // console.log($password);
-
-  });
+angular.module('myApp', ['ngCookies'])
+    .config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode({
+          enabled: true,
+          requireBase: false
+        });
+    }])
+    .controller('MainController', [
+        '$scope',
+        '$cookies',
+        '$location',
+        function($scope, $cookies, $location) {
+            var token = $cookies.get('token')
+            console.log(token)
+            if (!token) {
+                var searchObject = $location.search()
+                if (searchObject.token) {
+                    $cookies.put('token', searchObject.token)
+                }
+            }
+            $scope.login = function() {
+                window.location.href = "http://localhost:8081/api/v1/auth/facebook";
+            }
+            // console.log($username);
+            // console.log($password);
+        }
+    ]);
 
 // Generate dynamic page
 var dynamicPageIndex = 0;

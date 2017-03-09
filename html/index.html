@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="loginApp">
+<html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
@@ -17,7 +17,7 @@
     <!-- IMPORTANT! Demo has some custom styles applied via chrome inspector to fix the viewing scroll bugs, these need to actually be fixed permanettly-->
     <link rel="stylesheet" href="css/my-app.css">
   </head>
-  <body>
+  <body ng-app="myApp" ng-controller="MainController">
 	<div class="statusbar-overlay"></div>
       <div class="views tabs toolbar-through">
          <div id="view-1" class="view view-main tab active">
@@ -91,7 +91,7 @@
                </div>
             </div>
          </div> -->
-         <div id="view-6" class="view tab" data-page="login" ng-controller="LoginController">
+         <div id="view-6" class="view tab" data-page="login">
       <!-- Default view-page layout -->
 
           <!-- page-content has additional login-screen content -->
@@ -122,7 +122,7 @@
               <div class="list-block">
                 <ul>
                   <li>
-                    <a href="#" class="item-link list-button" ng-click="login">Sign In</a>
+                    <a href="#" class="item-link list-button">Sign In</a>
                   </li>
                 </ul>
                 <div class="list-block-label">Some text with login information.</div>
@@ -130,7 +130,7 @@
                             <div class="list-block">
                 <ul>
                   <li>
-                    <a href="" id="facebook" class="item-link list-button"><img src="img/facebook.png" style="width:80%;height:80%;"></a>
+                    <a href="" id="facebook" class="item-link list-button" ng-click="login()"><img src="img/facebook.png" style="width:80%;height:80%;"></a>
                   </li>
                 </ul>
               </div>
@@ -336,17 +336,9 @@
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="js/framework7.min.js"></script>
     <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/angular-cookies.min.js"></script>
     <!-- Path to app.js-->
     <script type="text/javascript" src="js/my-app.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    <script>
-    var el = document.getElementById('facebook');
-    el.onclick = facebook;
-    
-    function facebook() {
-      window.location.href = "http://localhost:8081/api/v1/auth/facebook";
-      return false;
-    }
-    </script>
   </body>
 </html>
