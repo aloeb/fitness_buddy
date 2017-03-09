@@ -1,5 +1,98 @@
 $(function() {
 
+  //Avoid using api calls too frequently not sure what if any rate limits tehre are, we might be able to find out, caching would be best probaly
+  /* 'https://www.purdue.edu/DRSFacilityUsageAPI/locations' JSON response looks like:
+  [{
+  	"LocationId": "b0e732b7-a89b-42e7-9465-03ba48769a62", #unique to each area
+  	"LocationName": "Field 2", #also unique
+  	"ZoneId": "fdbd39c0-689b-4199-b366-54a2577ef35f", #zone area belongs in, non unique - group by this
+  	"ZoneName": "TREC", #goes with ZoneId above, probably unique (no way to get zones alone from API?)
+  	"Capacity": 50,
+  	"Active": true, #looks like inverse of closed might just be wether people are here or not
+  	"Closed": false, #key off of this for hours
+  	"LastUpdatedTime": "2017-02-21T23:30:41.393", #time date stamp of last update
+  	"ZoneAndLocationName": null #not sure what this is, always seems to be null, ignore I guess
+    },{},{}...]
+  */
+
+  function coRecHours(){
+    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
+    var xhr = $.getJSON(url).done(function(data) {
+      dynamicAlert(data);
+    }).fail(function() {
+      console.log("Error loading " + url);
+    });
+  }
+  // Thursday	5:30AM–12AM 5:30, 0
+  // Friday	5:30AM–12AM  5:30, 0
+  // Saturday	8AM–12AM  8, 0
+  // Sunday	10AM–12AM  10, 0
+  // Monday	5:30AM–12AM  5:30, 0
+  // Tuesday	5:30AM–12AM  5:30, 0
+  // Wednesday	5:30AM–12AM  5:30, 0
+
+  function dynamicAlert(){
+    var alert = document.getElementById("dynamic-alert");
+    if(moment().get('hour') < "12" || true){
+      // <div class='alert alert-danager alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>The CoRec is closing soon!</strong> It closes at 12am.</div>
+      // $('#dynamic-alert').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Oh snap! The CoRec is closed!</strong> It reopens tomorrow at: 5:30am</div>")
+      $('#dynamic-alert').append("<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>The CoRec is currently open!</strong> It closes tonight at Midnight</div>")
+    }
+  }
+
+  function getKeyArray(hash) {
+    var keys = [];
+    for(var i in hash) {
+      keys = keys.concat(i);
+    }
+    return keys;
+  }
+
+  function getValueArray(hash) {
+    var values = [];
+    for(var i in hash) {
+      values = values.concat(hash[i]);
+    }
+    return values;
+  }
+
+  function initLastUpdatedTime(locationid, el) {
+    /* 'https://www.purdue.edu/DRSFacilityUsageAPI/lastupdatedtime/' JSON response looks like:
+    {
+    	"LocationId": "f670d7d7-c99e-4ef4-9c4f-22008753331a", #without LocationId the most recenlty updated area is returned
+    	"LocationName": "Upper Track", #name
+    	"ZoneId": null, #not sure why this is null...
+    	"ZoneName": null, #same here it only seems null when called with lastupdatedtime...
+    	"Capacity": 20,
+    	"Active": false,
+    	"Closed": false,
+    	"LastUpdatedTime": "2017-02-21T08:56:24.14",
+    	"ZoneAndLocationName": null
+    }
+    also available: https://www.purdue.edu/DRSFacilityUsageAPI/lastupdatedtime/{LocationId}
+    */
+    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "lastupdatedtime";
+    if(typeof locationid != 'undefined') {
+      url = url + "/" + locationid;
+    }
+    var xhr = $.getJSON(url).done(function(data) {
+      viewLastUpdatedTime(data, el);
+    }).fail(function() {
+      console.log("Error loading " + url);
+    });
+  }
+
+  function viewLastUpdatedTime(data, el) {
+    if(typeof data == 'undefined') {
+      return null;
+    }
+    if(typeof el == 'undefined') {
+      el = $("#lastupdatedtime");
+    }
+    var d = moment(data.LastUpdatedTime);
+    el.html("Most recently updated  at " + moment(data.LastUpdatedTime).format('h:mm a'));
+  }
+
   function initCurrentActivityCharts() {
     /* 'https://www.purdue.edu/DRSFacilityUsageAPI/currentactivity/' JSON response looks like:
     [{
@@ -39,6 +132,17 @@ $(function() {
         console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
       }
     });
+  }
+
+  function getLocationData(){
+    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+    var locationdata;
+    var xhr = $.getJSON(url).done(function(data) {
+      return data;
+    }).fail(function (jqxhr, textStatus, error) {
+      console.log("Error loading " + url);
+    });
+    return xhr;
   }
 
   function viewCurrentActivityCharts(data, data2) {
@@ -228,9 +332,508 @@ $(function() {
         }
       }
 
-  var app = window.app || {};
-  window.app = app;
 
-  app.initCurrentActivityCharts = initCurrentActivityCharts;
+      function initMonthlyTrendsChart(locationid) {
+        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "monthlytrends";
+        if(typeof locationid != 'undefined') {
+          url = url + "/" + locationid;
+        }
+        var xhr = $.getJSON(url).done(function(data) {
+          viewMonthlyTrendsChart(data);
+        }).fail(function() {
+          console.log("Error loading " + url);
+        });
+      }
 
-});
+      function viewMonthlyTrendsChart(data) {
+        console.log(data);
+        if(typeof data == 'undefined') {
+          return null;
+        }
+
+        var headcounts = {};
+        var capacities = {};
+        var counter = 0;
+        for(var stat in data) {
+          console.log(stat);
+          headcounts[data[stat].MonthName] = parseInt(data[stat].Headcount);
+          capacities[data[stat].MonthName] = parseInt(data[stat].Capacity);
+          counter++;
+        }
+
+        var chartdata = {};
+        var options = {};
+        var labels = getKeyArray(headcounts).reverse();
+        console.log(labels);
+        var datapoints = getValueArray(headcounts).reverse();
+        console.log(datapoints);
+        var maxCapacity = Math.max.apply(null, getValueArray(capacities));
+        console.log(maxCapacity);
+        var datasets = [
+          {
+            label: "Attendance",
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            pointBorderColor: "rgba(54, 162, 235, 1)",
+            pointBackgroundColor: "rgba(54, 162, 235, 1)",
+            pointHoverBackgroundColor: "rgba(54, 162, 235, 1)",
+            pointHoverBorderColor: "rgba(54, 162, 235, 1)",
+            data: datapoints
+          }
+        ];
+
+        el = document.getElementById("monthlychart");
+        while (el.firstChild) {
+          el.removeChild(el.firstChild);
+          console.log("Remvoing Child el");
+        }
+        var canvas = document.createElement("canvas");
+        canvas.width = el.getAttribute("width");
+        canvas.height = el.getAttribute("height");
+        el.appendChild(canvas);
+
+        var ctx = canvas.getContext("2d");
+        var chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: datasets
+          },
+          options: {
+            legend: {display: false},
+            tooltips: {displayColors: false},
+            scales: {
+              yAxes: [{
+                ticks: {
+                  min: 0,
+                  max: maxCapacity
+                }
+              }]
+            }
+          }
+        });
+
+      }
+
+      function updateMonthlyTrendsChart(locationid) {
+        var chart = document.getElementById("monthlychart");
+        if(chart) {
+          var containerWidth = $(chart).parent().width();
+          $(chart).attr('width', containerWidth); //max width
+          $(chart).attr('height', 250 ); //max height
+          initMonthlyTrendsChart(locationid);
+        }
+      }
+
+      function updateWeekTrendsChart(locationid) {
+        /* 'https://www.purdue.edu/DRSFacilityUsageAPI/weeklytrends/ + locationID' JSON response looks like:
+        This is with location upper gym
+        [{
+        "LocationID": "98450599-5986-4324-b1fb-d4de0412b7ed",
+        "LocationName": "Upper Gym",
+        "Headcount": 12,
+        "EntryDate": "0001-01-01T00:00:00",
+        "DayOfWeek": 6, #each day of the week
+        "Hour": 23, #every hour, military time no AM or PM
+        "DayName": "Saturday"
+        },
+        {
+        "LocationID": "98450599-5986-4324-b1fb-d4de0412b7ed",
+        "LocationName": "Upper Gym",
+        "Headcount": 11,
+        "EntryDate": "0001-01-01T00:00:00",
+        "DayOfWeek": 6,
+        "Hour": 22,
+        "DayName": "Saturday"
+        },
+        {},{},{}...]
+
+        TODO: parts of this are a little janky, averages are way off. Comments below...
+        Loop over this data to build weekly chart, we should go back and ignore midnight to 6 am when the CoRec is closed. Not done currently
+        EDIT: actually don't do it based on fixed times ignore the data point if the Corec or the location itself is closed. We have this data as part of the locations api
+        EDIT but not historical context
+        we will have to fudge this or use Mongo or something. Not doing right now.
+        it apears you can call weeklytrends without a locationid but that just returns info with CoRec, that might be junk or it could be staff count or something
+        ignore for now unless we find value in the data EDIT: The number seems to small to be staff since it says 6, 8, 11...not even sure what it represents so no value right now (don't use)
+        */
+        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
+        if(typeof locationid != 'undefined') {
+          url = url + "/" + locationid;
+        }
+
+        var url2= "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+        if(typeof locationid != 'undefined') {
+          url2 = url2 + "/" + locationid;
+        }
+
+        var chart = document.getElementById("weeklychart");
+        if(chart) {
+          var containerWidth = $(chart).parent().width();
+          $(chart).attr('width', containerWidth); //max width
+          $(chart).attr('height', 250 ); //max height
+          var spinner = new Spinner({
+            length: 5
+          }).spin();
+          $('#modal-body').append(spinner.el);
+
+          var weeklyData, locationData;
+          $.when(
+            $.getJSON(url, function(data) {
+              weeklyData = data;
+            }),
+            $.getJSON(url2, function(data) {
+              locationData = data;
+            })
+          ).then(function() {
+            if (weeklyData && locationData) {
+              viewWeekTrendsChart(weeklyData, locationData);
+              spinner.stop();
+            }
+            else {
+              // Request for web data didn't work, handle it
+              console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
+            }
+          });
+        }
+
+      }
+
+
+      function initWeeklyTrendsChart(locationid, x, y, width, height) {
+        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
+        if(typeof locationid != 'undefined') {
+          url = url + "/" + locationid;
+        }
+        var xhr = $.getJSON(url).done(function(data) {
+          viewWeeklyTrendsChart(data, x, y, width, height);
+        }).fail(function() {
+          console.log("Error loading " + url);
+        });
+        //commenting out for now, this is only real time, so have to work around it
+      /*
+      	TODO: get wether the location is active or closed
+      	if(typeof locationid != 'undefined') {
+      		url2 = "https://www.purdue.edu/DRSFacilityUsageAPI/locations/" + locationid;
+      	}
+
+      	var xhr = $.getJSON(url2).done(function(data) {
+      		viewWeeklyTrendsChart(data, x, y, width, height);
+      	}).fail(function(jqxhr, textStatus, error) {
+      		console.log("Error: " + error);
+      	});
+      */
+      }
+
+      function viewWeekTrendsChart(data, locationdata) {
+        console.log("RUNNING HERE");
+        console.log(data);
+        console.log(locationdata);
+        if(typeof data == 'undefined') {
+          return null;
+        }
+        console.log(data);
+        var headcounts = [];
+        for(var i = 0; i < 7; i++) {
+          for(var j = 0; j < 24; j++) {
+            headcounts[i * 24 + j] = 0;
+          }
+        }
+        // console.log(headcounts);
+        var time;
+        for(var stat in data) {
+          headcounts[parseInt(data[stat].DayOfWeek) * 24 + parseInt(data[stat].Hour)] = parseInt(data[stat].Headcount);
+        }
+        // console.log(hours);
+        var averages = [];
+        for(var k = 0; k < 7; k++){
+          var total = 0;
+          var count = 0;
+          for(var l = 0; l < 24; l++){
+            if(headcounts[k * 24 + l] != 0){
+              total += headcounts[k * 24 + l];
+              count++;
+            }
+          }
+          averages[k] = Math.round(total / count);
+          console.log(total);
+          console.log(count);
+        }
+        console.log("HERE");
+        console.log(averages);
+        console.log("TOO FAR");
+        console.log(headcounts);
+
+        var el = document.getElementById("weeklychart");
+        while (el.firstChild) {
+          el.removeChild(el.firstChild);
+          console.log("Remvoing Child el");
+        }
+        var canvas = document.createElement("canvas");
+        canvas.width = el.getAttribute("width");
+        canvas.height = el.getAttribute("height");
+        el.appendChild(canvas);
+
+        ctx = canvas.getContext("2d");
+        chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ["S", "M", "T", "W", "Th", "F", "S"],
+            datasets: [
+              {
+                label: "Average",
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 98, 205,0.2)'
+                ],
+                borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 98, 205,1)'
+                ],
+                borderWidth: 1,
+                data: averages,
+              }
+            ]
+          },
+          options: {
+            legend: {display: false},
+            tooltips: {displayColors: false},
+            scales: {
+              yAxes: [{
+                ticks: {
+                  min: 0,
+                  max: locationdata.Capacity
+                }
+              }]
+            }
+          }
+        });
+      }
+
+      function viewWeeklyTrendsChart(data, x, y, width, height) {
+        if(typeof data == 'undefined') {
+          return null;
+        }
+        console.log(data);
+        var valuesx = [];
+        var valuesy = [];
+        var headcounts = [];
+        for(var i = 0; i < 7; i++) {
+          for(var j = 0; j < 24; j++) {
+            valuesx[i * 24 + j] = i + 1;
+            valuesy[i * 24 + j] = j;
+            headcounts[i * 24 + j] = 0;
+          }
+        }
+        console.log(valuesx);
+        console.log(valuesy);
+        console.log(headcounts);
+        var time;
+        for(var stat in data) {
+          headcounts[parseInt(data[stat].DayOfWeek) * 24 + parseInt(data[stat].Hour)] = parseInt(data[stat].Headcount);
+          // if(parseInt(data[stat].Headcount) != 0){
+          // 	if(parseInt(data[stat].Hour) > 12){
+          // 		time = parseInt(data[stat].Hour) - 12 + "pm";
+          // 	}
+          // 	else{
+          // 		time = parseInt(data[stat].Hour) + "am";
+          // 	}
+          // 	hours[parseInt(data[stat].DayOfWeek)][parseInt(data[stat].Hour)] = time;
+          // }
+        }
+        // console.log(hours);
+        var averages = [];
+        for(var k = 0; k < 7; k++){
+          var total = 0;
+          var count = 0;
+          for(var l = 0; l < 24; l++){
+            if(headcounts[k * 24 + l] != 0){
+              total += headcounts[k * 24 + l];
+              count++;
+            }
+          }
+          averages[k] = Math.round(total / count);
+          console.log(total);
+          console.log(count);
+        }
+        console.log("HERE");
+        console.log(averages);
+        console.log("TOO FAR");
+        console.log(headcounts);
+
+        var weekly = document.getElementById("hourlychart");
+        while (weekly.firstChild) {
+          weekly.removeChild(weekly.firstChild);
+          console.log("Remvoing Child weekly");
+        }
+        // var canvas2 = document.createElement("canvas");
+        // canvas2.width = weekly.getAttribute("width");
+        // canvas2.height = weekly.getAttribute("height");
+        // weekly.appendChild(canvas2);
+
+        // ctx2 = canvas2.getContext("2d");
+        // chart2 = new Chart(ctx2, {
+        // 		type: 'bar',
+        // 		data: {
+        // labels: ["S", "M", "T", "W", "Th", "F", "S"],
+        // datasets: [
+        // 		{
+        // 				label: "My First dataset",
+        // 				backgroundColor: [
+        // 						'rgba(255, 99, 132, 0.2)',
+        // 						'rgba(54, 162, 235, 0.2)',
+        // 						'rgba(255, 206, 86, 0.2)',
+        // 						'rgba(75, 192, 192, 0.2)',
+        // 						'rgba(153, 102, 255, 0.2)',
+        // 						'rgba(255, 159, 64, 0.2)',
+        // 						'rgba(255, 98, 205,0.2)'
+        // 				],
+        // 				borderColor: [
+        // 						'rgba(255,99,132,1)',
+        // 						'rgba(54, 162, 235, 1)',
+        // 						'rgba(255, 206, 86, 1)',
+        // 						'rgba(75, 192, 192, 1)',
+        // 						'rgba(153, 102, 255, 1)',
+        // 						'rgba(255, 159, 64, 1)',
+        // 						'rgba(255, 98, 205,1)'
+        // 				],
+        // 				borderWidth: 1,
+        // 				data: averages,
+        // 		}
+        // ]
+        // },
+        // 		options: {
+        // 			legend: {display: false},
+        // 			tooltips: {displayColors: false},
+        // 			scales: {
+        // 				yAxes: [{
+        // 					ticks: {
+        // 						min: 0,
+        // 						max: 20
+        // 					}
+        // 				}]
+        // 			}
+        // 		}
+        // });
+
+
+
+
+
+        var axisxlabels = ["S", "M", "T", "W", "Th", "F", "S"];
+        var axisylabels = ["Midnight", "1 am", "2 am", "3 am", "4 am", "5 am", "6 am", "7 am", "8 am", "9 am", "10 am", "11 am", "Noon", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm", "6 pm", "7 pm", "8 pm", "9 pm", "10 pm", "11 pm"];
+
+        // switch from hours ascending to descending
+        axisylabels.reverse();
+        var headcounts2 = [];
+        for(var i = 0; i < 7; i++) {
+          headcounts2 = headcounts2.concat(headcounts.slice(i * 24, (i + 1) * 24).reverse());
+        }
+        console.log(headcounts);
+        console.log(headcounts2);
+
+        headcounts = headcounts2;
+        // for(var count in headcounts){
+        // 	if(headcounts[count] == '0'){
+        // 		headcounts[count] = null;
+        // 	}
+        // }
+        console.log(headcounts);
+        console.log(headcounts2);
+
+        //use Raphael over chart.js for this, has heat chart built it
+      	//demo here: http://dmitrybaranovskiy.github.io/raphael/github/dots.html
+      	//possibly rebuild this with chart.js for ease of use capability but for now Raphael.js
+        var paper = Raphael("hourlychart", width, height);
+        var options = { heat: true, max: 10, axisxlabels: axisxlabels, axisylabels: axisylabels, axis: "1 0 1 1", axisxstep: 6, axisystep: 23 };
+        dotChart = paper.dotchart(x, y, width, height, valuesx, valuesy, headcounts, options).hover(function () {
+          dotChart.covers = paper.set();
+          if(this.value != 0){
+            dotChart.covers.push(paper.tag(this.x, this.y, this.value , 0, this.r + 2).insertBefore(this));
+          }
+        }, function () {
+          dotChart.covers.remove();
+        });
+      }
+
+      function updateWeeklyTrendsChart(locationid) {
+        var chart = $("#hourlychart").first();
+        if(chart) {
+          chart.empty();
+          var x = 10;
+          var y = 0;
+          $("#hourlychart svg").first().attr("width", 348);
+          $("#hourlychart svg").first().attr("height", 487.2);
+          initWeeklyTrendsChart(locationid, x, y, 348, 487.2);
+        }
+      }
+
+      function initTrendsCharts(locationid) {
+        app.trendsChartsActive = true;
+        app.trendsChartsLocationID = locationid;
+        $('#trends').css('display', 'block');
+        updateTrendsCharts(locationid);
+        $('#trends').modal();
+      }
+
+      function updateTrendsCharts(locationid) {
+        /* 'https://www.purdue.edu/DRSFacilityUsageAPI/locations' JSON response looks like:
+      	[{
+      		"LocationId": "b0e732b7-a89b-42e7-9465-03ba48769a62", #unique to each area
+      		"LocationName": "Field 2", #also unique
+      		"ZoneId": "fdbd39c0-689b-4199-b366-54a2577ef35f", #zone area belongs in, non unique - group by this
+      		"ZoneName": "TREC", #goes with ZoneId above, probably unique (no way to get zones alone from API?)
+      		"Capacity": 50,
+      		"Active": true, #looks like inverse of closed might just be wether people are here or not
+      		"Closed": false, #key off of this for hours
+      		"LastUpdatedTime": "2017-02-21T23:30:41.393", #time date stamp of last update
+      		"ZoneAndLocationName": null #not sure what this is, always seems to be null, ignore I guess
+      	  }]
+      	 */
+        if(app.trendsChartsActive) {
+          var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+          if(typeof locationid != 'undefined') {
+            url = url + "/" + locationid;
+          }
+          var xhr = $.getJSON(url).done(function(data) {
+            $("#locationname").html(data.LocationName);
+            console.log(data);
+          }).fail(function() {
+            console.log("Error loading " + url);
+          });
+
+          updateMonthlyTrendsChart(locationid);
+          updateWeeklyTrendsChart(locationid);
+          updateWeekTrendsChart(locationid);
+          initLastUpdatedTime(locationid, $("#lastupdatedtimetrends"));
+        }
+      }
+
+      $('#trends').on('hide.bs.modal', function () {
+        app.trendsChartsActive = false;
+        app.trendsChartsLocationID = "";
+      });
+
+
+      var app = window.app || {};
+      window.app = app;
+
+      app.trendsChartsActive = false;
+      app.trendsChartsLocationID = "";
+      app.initLastUpdatedTime = initLastUpdatedTime;
+      app.initCurrentActivityCharts = initCurrentActivityCharts;
+      app.initTrendsCharts = initTrendsCharts;
+      app.updateTrendsCharts = updateTrendsCharts;
+      app.resizeHandler = resizeHandler;
+      app.dynamicAlert = dynamicAlert;
+
+    });

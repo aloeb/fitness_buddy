@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="css/custom.css" rel="stylesheet" type="text/css">
+
+</head>
+  <body class="">
+		<div id="dynamic-alert">
+
+		</div>
+    <div class="container">
+
+      <div class="page-content">
+        <div class="charts row" id="currentactivity">
+          <ul class='nav nav-pills' role='tablist' id='tabs'></ul>
+            <div class='tab-content' id='tab-panes'></div>
+        </div>
+        <div class="charts modal fade" id="trends" style="display: none;" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button">×</button>
+                <h4 class="modal-title capitalized">
+                  <span id="locationname"></span> Trends
+                </h4>
+              </div>
+              <div class="modal-body" id="modal-body">
+                <h5 class="chartcaption capitalized">
+                  Day Trends
+                </h5>
+                <div class="chart" id="weeklychart" width="568" height="200"></div>
+                <hr>
+                <h5 class="chartcaption capitalized">
+                  Hourly Trends
+                </h5>
+                <div class="chart" id="hourlychart"></div>
+                <hr>
+                <h5 class="chartcaption capitalized">
+                  Monthly Trends
+                </h5>
+                <h6 class="chart-subcaption">Attendance</h6>
+                <div class="chart" id="monthlychart" width="568" height="200"></div>
+              </div>
+              <div class="modal-footer">
+								<div class="smaller" id="lastupdatedtimetrends" style="float:left;"></div>
+                <button class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="smaller" id="lastupdatedtime"></div>
+
+
+      </div>
+    </div>
+    <script>
+        var app = window.app || {};
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/graphael/0.5.1/g.raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/graphael/0.5.1/g.dot-min.js"></script>
+		<script src="js/corec.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            app.initCurrentActivityCharts();
+            app.initLastUpdatedTime();
+            app.dynamicAlert();
+        });
+    </script>
+
+
+</body></html>
