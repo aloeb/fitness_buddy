@@ -17,6 +17,10 @@ var view6 = myApp.addView('#view-6', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
+var view4 = myApp.addView('#view-4', {
+    // Because we use fixed-through navbar we can enable dynamic navbar
+    dynamicNavbar: true
+});
 // var view9 = myApp.addView('#view-9', {
 //     // Because we use fixed-through navbar we can enable dynamic navbar
 //     dynamicNavbar: true
@@ -70,15 +74,23 @@ angular.module('myApp', ['ngCookies'])
         '$location',
         function($scope, $cookies, $location) {
             var token = $cookies.get('token')
-            console.log(token)
             if (!token) {
                 var searchObject = $location.search()
                 if (searchObject.token) {
                     $cookies.put('token', searchObject.token)
+                    token = searchObject.token
                 }
             }
+            $scope.token = token
             $scope.login = function() {
                 window.location.href = "http://localhost:8081/api/v1/auth/facebook";
+            }
+            $scope.logout = function() {
+                $cookies.remove('token')
+                window.location.href = "http://localhost:8081/";
+            }
+            $scope.logged_in = function() {
+                return (typeof $scope.token != 'undefined')
             }
             // console.log($username);
             // console.log($password);
