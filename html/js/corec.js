@@ -56,6 +56,7 @@ $(function() {
     var lastupdatedtimes = {};
     var tabcount = 0;
     var lastZoneId = "";
+    var hotTab = false;
 
     for (var area in data2) {
       closedZones[data2[area].LocationId] = data2[area].Closed;
@@ -95,7 +96,19 @@ $(function() {
       zonenames[data[area].LocationId] = data[area].ZoneName;
       entrydates[data[area].LocationId] = data[area].EntryDate;
 
-
+      if (headcounts[data[area].LocationId] / capacities[data[area].LocationId] >= 0.6) {
+        if (!hotTab) {
+          var tab = $(
+            "<li><a href='#tabs-0' role='tab' data-toggle='tab'>Hot Spots</a></li>"
+          );
+          tab.prependTo("#tabs");
+          var tabsection = $(
+            "<div id='tabs-0' class='tab-pane'></div>"
+          );
+          tabsection.prependTo("#tab-panes");
+          hotTab = true;
+        }
+      }
     }
 
     var chartdata = [];
@@ -182,7 +195,36 @@ $(function() {
 
 
 
+        if (hotTab && headcounts[key] / capacities[key] >= 0.6) {
+          var chartitemHot = $(
+            "<div class='chartitem col-xs-12'>" +
+            "<div class='row'>" +
+            "<a onclick='app.initTrendsCharts(\"" + key + "\");'>" +
+            "<h2 class='chartcaption capitalized col-xs-6'><span class='chartcaption-title'>" + locationnames[key] + "</span>" +
+            "<div class='chartcaption-data'>" + zonenames[key] + "</div>" +
+            "<div class='chartcaption-data'>" + headcounts[key] + " / " + capacities[key] + "</div>" +
+            "</h2>" +
+            "<div class='col-xs-6 chart'>" +
+            "<canvas id='chart" + key + "-hot' width='100' height='100'></canvas>" +
+            "</div>" +
+            "</a>" +
+            "</div>" +
+            "</div>");
+            chartitemHot.appendTo("#tabs-0");
 
+            var elHot = document.getElementById("chart" + key + "-hot");
+
+            var ctxHot = elHot.getContext("2d");
+            var chartHot = new Chart(ctxHot, {
+              type: 'doughnut',
+              data: data2,
+              options: {
+                cutoutPercentage: 80,
+                legend: {display: false},
+                tooltips: {displayColors: false}
+              }
+            });
+          }
         }
       }
 
