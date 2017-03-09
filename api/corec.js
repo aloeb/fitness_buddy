@@ -96,7 +96,7 @@ corec.get_exercises = function(filters, cb) {
 	});
 }
 
-corec.get_reccomended_time = function(exerciseName, week, cb) {
+corec.get_reccomended_time = function(location, week, cb) {
 	var hists;
     //array of time recommendations to return in ascending order
 	cb = [];
@@ -163,14 +163,10 @@ corec.get_reccomended_time = function(exerciseName, week, cb) {
             case headcount< cb[3].headcount: insert(hists[i], 3);
             case headcount< cb[4].headcount: insert(hists[i], 4);
 
-
 		}
-
-
 	}
 
 	//find 5 least populated times given availability
-
 
 	for(var day =0; day <7; day++){
     	for(var hour = 0; hour < 24; hour++){
@@ -180,8 +176,6 @@ corec.get_reccomended_time = function(exerciseName, week, cb) {
 		}
 	}
 	*/
-
-
 
 }
 
@@ -197,5 +191,29 @@ History.find({'LocationID':location}, (err, hist) => {
 	});
 }
 
+corec.get_reccomended_exercises = function(user, type, cb) {
+	exercise.find({ 'type':type, 'creator.type':'58c1a59c40b5e37c08782f3e'}, (err, exercises) => {
+    if (err) {
+        cb(false)
+        return
+    }
 
+	cb(exercises.sort(function(a,b) {return b.popularity - a.popularity}))
+
+	});
+
+}
+
+corec.get_reccomended_workouts = function(user, type, cb) {
+    Workout.find({ 'creator.type':'58c1a59c40b5e37c08782f3e'}, (err, workouts) => {
+        if (err) {
+            cb(false)
+            return
+        }
+
+        cb(workouts.sort(function(a,b) {b.popularity - a.popularity}))
+
+});
+
+}
 module.exports = corec
