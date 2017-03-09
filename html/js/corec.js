@@ -40,7 +40,125 @@ $(function() {
       }
     });
   }
-  
+
+  function viewCurrentActivityCharts(data, data2) {
+    if(typeof data == 'undefined') {
+      return null;
+    }
+
+    var entrydates = {};
+    var capacities = {};
+    var headcounts = {};
+    var locationnames = {};
+    var zones = {};
+    var zonenames = {};
+    var lastupdatedtimes = {};
+    var tabcount = 0;
+    var lastZoneId = "";
+
+
+
+    for (var area in data) {
+      console.log(area);
+      if (lastZoneId != data[area].ZoneId) {
+        lastZoneId = data[area].ZoneId;
+        tabcount++;
+        var tab = $(
+          "<li><a href='#tabs-" + tabcount + "' role='tab' data-toggle='tab'>" + data[area].ZoneName + "</a></li>"
+        );
+        tab.appendTo("#tabs");
+        var tabsection = $(
+          "<div id='tabs-" + tabcount + "' class='tab-pane'></div>"
+        );
+        tabsection.appendTo("#tab-panes");
+      }
+      if(data[area].Capacity == null){
+        capacities[data[area].LocationId] = 0;
+      }
+      else {
+        capacities[data[area].LocationId] = parseInt(data[area].Capacity);
+      }
+      if(data[area].Headcount == null){
+        headcounts[data[area].LocationId] = 0;
+      }
+      else {
+        headcounts[data[area].LocationId] = parseInt(data[area].Headcount);
+      }
+
+      locationnames[data[area].LocationId] = data[area].LocationName;
+      zones[data[area].LocationId] = tabcount;
+      zonenames[data[area].LocationId] = data[area].ZoneName;
+      entrydates[data[area].LocationId] = data[area].EntryDate;
+
+
+    }
+
+    var chartdata = [];
+
+    for (var key in headcounts) {
+      if(capacities[key] < headcounts[key]){
+        freeSpace = 0;
+      }
+      else {
+        freeSpace = capacities[key] - headcounts[key];
+      }
+
+      var color;
+      if(headcounts[key] / capacities[key] >= 0.8) {
+        color = "red";
+      } else if(headcounts[key] / capacities[key] >= 0.6) {
+        color = "orange";
+      } else {
+        color = "green";
+      }
+
+
+
+        var HTML = "<div class='chartitem col-xs-12'>";
+        HTML += "<div class='row'>";
+        HTML += "<a onclick='app.initTrendsCharts(\"" + key + "\");'>";
+        HTML += "<h2 class='chartcaption capitalized col-xs-6'><span class='chartcaption-title'>" + locationnames[key] + "</span>";
+        HTML += "<div class='chartcaption-data'>";
+        if (headcounts[key] != '0') {
+          HTML += headcounts[key];
+          HTML += " / "
+          HTML += capacities[key];
+        }
+        console.log(key);
+
+        if(headcounts[key] == '0') {
+          HTML += "<div class='chartcaption-data'><span class='label label-success'>Empty</span></div>";
+        }
+        HTML += "</div>";
+        HTML += "</h2>";
+        HTML += "<div class='col-xs-6 chart' id=" + key + ">";
+        HTML += "<canvas id='chart" + key + "' width='100' height='100'></canvas>";
+        HTML += "</div>";
+        HTML += "</a>";
+        HTML += "</div>";
+        if(entrydates[key] != null){
+          HTML += "<div class='smaller'>Last updated " + moment(entrydates[key]).format('h:mm a');+"</div>"
+        }
+        else {
+          HTML += "<div class='smaller'>Last updated " + moment(lastupdatedtimes[key]).format('h:mm a');+"</div>"
+        }
+        HTML += "</div>";
+        var chartitem = $(HTML);
+        chartitem.appendTo("#tabs-" + zones[key]);
+
+        $("#tabs a:first").tab('show');
+
+
+
+
+
+
+        }
+      }
+
   var app = window.app || {};
   window.app = app;
+
+  app.initCurrentActivityCharts = initCurrentActivityCharts;
+
 });
