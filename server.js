@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
 // Config
-var conf = require('../config.js');
+var conf = require('./config.js');
 
 // MONGO
 mongoose.Promise = global.Promise;
