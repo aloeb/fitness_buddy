@@ -223,7 +223,7 @@ router.route('/users/auth_google/callback').get(
     (req, res) => {
         var userInfo = req.user;
 
-        User.findOne({ 'fb_id': req.query.state }, function(err, user) {
+        User.findOne({ 'fb_id': req.id }, function(err, user) {
             if (err) {
                 res.status(403).json({
                     Error: err
