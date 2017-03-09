@@ -46,6 +46,7 @@ $(function() {
       return null;
     }
 
+    var closedZones = {};
     var entrydates = {};
     var capacities = {};
     var headcounts = {};
@@ -56,8 +57,12 @@ $(function() {
     var tabcount = 0;
     var lastZoneId = "";
 
+    for (var area in data2) {
+      closedZones[data2[area].LocationId] = data2[area].Closed;
+      lastupdatedtimes[data2[area].LocationId] = data2[area].LastUpdatedTime;
+    }
 
-
+    console.log(closedZones);
     for (var area in data) {
       console.log(area);
       if (lastZoneId != data[area].ZoneId) {
@@ -112,21 +117,32 @@ $(function() {
         color = "green";
       }
 
-
+      var data2 = {
+        labels: [
+          "Occupied",
+          "Available"],
+          datasets: [{
+            data: [headcounts[key], freeSpace],
+            backgroundColor: [color]
+          }]
+      };
 
         var HTML = "<div class='chartitem col-xs-12'>";
         HTML += "<div class='row'>";
         HTML += "<a onclick='app.initTrendsCharts(\"" + key + "\");'>";
         HTML += "<h2 class='chartcaption capitalized col-xs-6'><span class='chartcaption-title'>" + locationnames[key] + "</span>";
         HTML += "<div class='chartcaption-data'>";
-        if (headcounts[key] != '0') {
+        if (closedZones[key] == false && headcounts[key] != '0') {
           HTML += headcounts[key];
           HTML += " / "
           HTML += capacities[key];
         }
+        console.log(closedZones[key]);
         console.log(key);
-
-        if(headcounts[key] == '0') {
+        if(closedZones[key]) {
+          HTML += "<span class='label label-danger'>Closed</span>";
+        }
+        if(headcounts[key] == '0' && closedZones[key] == false) {
           HTML += "<div class='chartcaption-data'><span class='label label-success'>Empty</span></div>";
         }
         HTML += "</div>";
@@ -148,7 +164,21 @@ $(function() {
 
         $("#tabs a:first").tab('show');
 
+          var el = document.getElementById("chart" + key);
 
+          var ctx = el.getContext("2d");
+
+          var chart = new Chart(ctx, {
+              type: 'doughnut',
+              data: data2,
+              options: {
+                cutoutPercentage: 80,
+                legend: {display: false},
+                tooltips: {displayColors: false}
+              }
+            });
+            console.log(chartdata[key]);
+            console.log(data);
 
 
 
