@@ -4,9 +4,13 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+// Config
+var conf = require('./config.js');
+
 // MONGO
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/fitness_buddy');
+mongoose.connect(conf.DB_URL);
+// mongoose.connect('mongodb://localhost:27017/fitness_buddy');
 
 // Create the app
 var app = express();

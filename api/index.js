@@ -51,7 +51,7 @@ router.use((req, res, next) => {
 passport.use(new FacebookStrategy({
         clientID: conf.FB_APP_ID,
         clientSecret:conf.FB_APP_SECRET,
-        callbackURL: 'http://localhost:8081/api/v1/auth/facebook_callback',
+        callbackURL: 'http://localhost:8081/api/v1/auth/facebook/callback',
     },
     function(accessToken, refreshToken, profile, done) {
         done(null, profile);
@@ -60,7 +60,7 @@ passport.use(new FacebookStrategy({
 
 router.route('/auth/facebook').get(passport.authenticate('facebook'));
 
-router.route('/auth/facebook_callback').get(
+router.route('/auth/facebook/callback').get(
     passport.authenticate('facebook', {
         failureRedirect: '/',
         session: false
