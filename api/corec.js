@@ -5,6 +5,7 @@ var User = require('../models/user');
 var Workout = require('../models/workout');
 var Exercise = require('../models/exercise');
 var History = require('../models/history');
+var Routine = require('../models/routine');
 
 var corec = new Object()
 
@@ -18,25 +19,53 @@ corec.get_current_usage = function(cb) {
 		});
 }
 
-corec.create_workout = function(user_id, workout, cb) {
+corec.create_routine = function(user_id, routine, cb) {
 	User.findOne({ 'fb_id': user_id}, (err, user) => {
 		if (err) {
 			cb(false)
 			return
 		}
-		var wo = Workout()
-		wo.completed_on = workout.date
-		wo.exercises = []
-		for (i = 0; i < workout.exercises.length; i++) {
-			wo.exercises.push(mongoose.Types.ObjectId(workout.exercises[i]))
+		var ro = Routine()
+		ro.creator = user._id
+		ro.name = routine.name
+		ro.tags = routine.tags
+		ro.exercises = []
+		for (i = 0; i < routine.exercises.length; i++) {
+			ro.exercises.push(mongoose.Types.ObjectId(routine.exercises[i]))
 		}
-		wo.save((err) => {
+		ro.save((err, saved) => {
             if (err) {
                 cb(false)
             } else {
-                cb(true)
+                cb(true, saved._id)
             }
         });
+	});
+}
+
+corec.schedule_workout = function(user_id, routine, date, cb) {
+	User.findOne({ 'fb_id': user_id }, (err, user) => {
+		if (err) {
+			cb(false)
+			return
+		}
+		var wo = Workout()
+		wo.routine = mongoose.Types.ObjectId(routine)
+		wo.completed_on = date
+		wo.save((err, saved) => {
+			if (err) {
+                cb(false)
+            } else {
+            	user.workouts.append(saved._id)
+            	user.save((err) => {
+            		if (err) {
+            			cb(false)
+            		} else {
+            			cb(true)
+            		}
+            	});
+            }
+		});
 	});
 }
 
@@ -47,8 +76,9 @@ corec.get_workouts = function(user_id, cb) {
 		if (err) {
 			cb([])
 			return
+		} else {
+			cb(user.workouts)
 		}
-		cb(user.workouts)
 	});
 }
 
@@ -82,6 +112,17 @@ corec.get_exercises = function(filters, cb) {
 			cb([])
 		} else {
 			cb(exercises)
+		}
+	});
+}
+
+corec.get_routines = function(filters, cb) {
+	var query = {}
+	Routine.find(query, (err, routines) => {
+		if (err) {
+			cb([])
+		} else {
+			cb(routines)
 		}
 	});
 }

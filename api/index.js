@@ -81,6 +81,7 @@ router.route('/auth/facebook/callback').get(
                     var newAccount = User();
                     newAccount.fb_id = user_id;
                     newAccount.name = req.user.displayName;
+                    newAccount.workouts = []
 
                     newAccount.save((err) => {
                         if (err) {
@@ -113,9 +114,14 @@ WIP - Adam L
 */
 
 /*
-Takes object of form as body parameter "workout":
+Takes object of form as body parameter "routine":
 {
-    date: <date_completed_or_scheduled>,
+    name: <name of workout routine>,
+    tags: [
+        <first_tag>,
+        <second_tag>,
+        ...
+    ],
     exercises: [
         <mongo_id_of_first_exercise>,
         <mongo_id_of_second_exercise>,
@@ -123,8 +129,23 @@ Takes object of form as body parameter "workout":
     ]
 }
 */
-router.route('/users/create_workout').post((req, res) => {
-    corec_data.create_workout(req.id, req.body.workout, (success) => {
+router.route('/users/create_routine').post((req, res) => {
+    corec_data.create_routine(req.id, req.body.routine, (success, id) => {
+        if (success) {
+            res.status(200).json({'routine': id})
+        } else {
+            res.status(96)
+        }
+    });
+});
+
+/*
+Takes two body parameters:
+    the id of the workout: 'routine'
+    the date to schedule: 'date'
+*/
+router.route('/users/schedule_workout').post((req, res) => {
+    corec_data.create_routine(req.id, req.body.routine, req.body.date, (success) => {
         if (success) {
             res.status(200)
         } else {
@@ -159,6 +180,15 @@ for a particular user.
 router.route('/users/get_workouts').post((req, res) => {
     corec_data.get_workouts(req.id, (workouts) => {
         res.status(200).json(workouts)
+    });
+})
+
+/*
+Get's routines. Basically all of them.
+*/
+router.route('/users/get_routines').post((req, res) => {
+    corec_data.get_routines(null, (routines) => {
+        res.status(200).json(routines)
     });
 })
 
