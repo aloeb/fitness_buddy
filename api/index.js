@@ -17,7 +17,7 @@ var corec_data = require('./corec.js')
 var calendar_data = require('./calendar.js')
 /* TO GET COREC USAGE DATA AS JSON OBJ:
 
-corec_data.get_current_usage(
+corec_data.get_usage('currentactivity',
     (arg) => {
         console.log(arg)
         next()
@@ -112,6 +112,24 @@ BEGIN WORKOUT STUFF
 WIP - Adam L
 
 */
+
+/*
+Takes body parameter "usage_type" which can take values:
+
+    weeklytrends
+    lastupdatedtime
+    currentactivity
+    locations
+    monthlytrends
+
+And takes a "location_id" optionally
+
+*/
+router.route('/corec/get_usage').post((req, res) => {
+    corec_data.get_usage(req.body.usage_type, req.body.location_id, (data) => {
+        res.status(200).json(data)
+    });
+});
 
 /*
 Takes object of form as body parameter "routine":

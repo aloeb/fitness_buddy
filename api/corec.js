@@ -9,8 +9,12 @@ var Routine = require('../models/routine');
 
 var corec = new Object()
 
-corec.get_current_usage = function(cb) {
-	https.get('https://www.purdue.edu/DRSFacilityUsageAPI/currentactivity',
+corec.get_usage = function(type, loc_id, cb) {
+	var url = 'https://www.purdue.edu/DRSFacilityUsageAPI/' + type
+	if (loc_id) {
+		url = url + '/' + loc_id
+	}
+	https.get(url,
 		(res) => {
 			res.setEncoding('utf8');
 			res.on('data', function (data) {
