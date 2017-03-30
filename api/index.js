@@ -96,6 +96,16 @@ router.route('/auth/facebook/callback').get(
 );
 
 
+router.route('/users/get_user').post((req, res) => {
+    User.findOne({ 'fb_id': req.id}, (err, user) => {
+        if (err) {
+            res.status(403).json({"nope": "you suck"})
+        } else {
+            res.status(200).json(user)
+        }
+    });
+});
+
 /*
 
 BEGIN WORKOUT STUFF
@@ -141,7 +151,7 @@ Takes object of form as body parameter "routine":
 router.route('/users/create_routine').post((req, res) => {
     corec_data.create_routine(req.id, req.body.routine, (success, id) => {
         if (success) {
-            res.status(200).json({'routine': id})
+            res.status(200).json({'r_id': id})
         } else {
             res.status(96)
         }
@@ -154,9 +164,9 @@ Takes two body parameters:
     the date to schedule: 'date'
 */
 router.route('/users/schedule_workout').post((req, res) => {
-    corec_data.create_routine(req.id, req.body.routine, req.body.date, (success) => {
+    corec_data.schedule_workout(req.id, req.body.routine, req.body.date, (success, wo_id) => {
         if (success) {
-            res.status(200)
+            res.status(200).json({'wo_id': wo_id})
         } else {
             res.status(96)
         }
@@ -173,9 +183,9 @@ Takes object of form as body parameter "exercise":
 }
 */
 router.route('/users/create_exercise').post((req, res) => {
-    corec_data.create_exercise(req.id, req.body.exercise, (success) => {
+    corec_data.create_exercise(req.id, req.body.exercise, (success, ex_id) => {
         if (success) {
-            res.status(200)
+            res.status(200).json({'ex_id': ex_id})
         } else {
             res.status(96)
         }

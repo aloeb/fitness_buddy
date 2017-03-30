@@ -59,17 +59,18 @@ corec.schedule_workout = function(user_id, routine, date, cb) {
 		}
 		var wo = Workout()
 		wo.routine = mongoose.Types.ObjectId(routine)
-		wo.completed_on = date
+		wo.completed_on = new Date(date)
 		wo.save((err, saved) => {
 			if (err) {
                 cb(false)
             } else {
-            	user.workouts.append(saved._id)
+            	console.log(user)
+            	user.workouts += [saved._id]
             	user.save((err) => {
             		if (err) {
             			cb(false)
             		} else {
-            			cb(true)
+            			cb(true, saved._id)
             		}
             	});
             }
@@ -103,11 +104,11 @@ corec.create_exercise = function(user_id, exercise, cb) {
 		ex.type = exercise.type
 		ex.popularity = 0
 		ex.creator = user._id
-		ex.save((err) => {
+		ex.save((err, saved) => {
 			if (err) {
                 cb(false)
             } else {
-                cb(true)
+                cb(true, saved._id)
             }
 		})
 	});
