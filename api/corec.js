@@ -17,10 +17,14 @@ corec.get_usage = function(type, loc_id, cb) {
 	https.get(url,
 		(res) => {
 			res.setEncoding('utf8');
+			var full_data = ''
 			res.on('data', function (data) {
-			    cb(JSON.parse(data));
+				full_data = full_data + data
 			});
-		});
+			res.on('end', () => {
+				cb(JSON.parse(full_data));
+			});
+		}).on('error', (e) => { console.log("error: "); console.log(e); });
 }
 
 corec.create_routine = function(user_id, routine, cb) {

@@ -15,15 +15,6 @@ var Calendar = require('../models/calendar');
 // Extra files
 var corec_data = require('./corec.js')
 var calendar_data = require('./calendar.js')
-/* TO GET COREC USAGE DATA AS JSON OBJ:
-
-corec_data.get_usage('currentactivity',
-    (arg) => {
-        console.log(arg)
-        next()
-    }
-);
-*/
 
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
