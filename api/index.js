@@ -203,10 +203,16 @@ router.route('/users/get_workouts').post((req, res) => {
 })
 
 /*
-Get's routines. Basically all of them.
+Gets routines. Basically all of them.
+
+Add the parameter "filters" of the following form:
+{
+    rec: <true_false>,
+    tags: [ tag1, tag2, ... ]
+}
 */
 router.route('/users/get_routines').post((req, res) => {
-    corec_data.get_routines(null, (routines) => {
+    corec_data.get_routines(req.id, req.body.filters, (routines) => {
         res.status(200).json(routines)
     });
 })
@@ -214,9 +220,15 @@ router.route('/users/get_routines').post((req, res) => {
 /*
 Will have ability to take parameters to filter, but for now
 returns all exercises.
+
+Add the parameter "filters" of the following form:
+{
+    rec: <true_false>,
+    types: [ core, legs, ... ]
+}
 */
 router.route('/users/get_exercises').post((req, res) => {
-    corec_data.get_exercises(null, (exercises) => {
+    corec_data.get_exercises(req.id, req.body.filters, (exercises) => {
         res.status(200).json(exercises)
     });
 });
