@@ -159,7 +159,7 @@ $(function() {
       }
       else {
         // Request for web data didn't work, handle it
-        console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
+        // console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
       }
     });
   }
@@ -200,9 +200,9 @@ $(function() {
       lastupdatedtimes[data2[area].LocationId] = data2[area].LastUpdatedTime;
     }
 
-    console.log(closedZones);
+    // console.log(closedZones);
     for (var area in data) {
-      console.log(area);
+      // console.log(area);
       if (lastZoneId != data[area].ZoneId) {
         lastZoneId = data[area].ZoneId;
         tabcount++;
@@ -287,8 +287,8 @@ $(function() {
           HTML += " / "
           HTML += capacities[key];
         }
-        console.log(closedZones[key]);
-        console.log(key);
+        // console.log(closedZones[key]);
+        // console.log(key);
         if(closedZones[key]) {
           HTML += "<span class='label label-danger'>Closed</span>";
         }
@@ -327,8 +327,8 @@ $(function() {
                 tooltips: {displayColors: false}
               }
             });
-            console.log(chartdata[key]);
-            console.log(data);
+            // console.log(chartdata[key]);
+            // console.log(data);
 
 
 
@@ -383,7 +383,7 @@ $(function() {
       }
 
       function viewMonthlyTrendsChart(data) {
-        console.log(data);
+        // console.log(data);
         if(typeof data == 'undefined') {
           return null;
         }
@@ -392,7 +392,7 @@ $(function() {
         var capacities = {};
         var counter = 0;
         for(var stat in data) {
-          console.log(stat);
+          // console.log(stat);
           headcounts[data[stat].MonthName] = parseInt(data[stat].Headcount);
           capacities[data[stat].MonthName] = parseInt(data[stat].Capacity);
           counter++;
@@ -401,11 +401,11 @@ $(function() {
         var chartdata = {};
         var options = {};
         var labels = getKeyArray(headcounts).reverse();
-        console.log(labels);
+        // console.log(labels);
         var datapoints = getValueArray(headcounts).reverse();
-        console.log(datapoints);
+        // console.log(datapoints);
         var maxCapacity = Math.max.apply(null, getValueArray(capacities));
-        console.log(maxCapacity);
+        // console.log(maxCapacity);
         var datasets = [
           {
             label: "Attendance",
@@ -422,7 +422,7 @@ $(function() {
         el = document.getElementById("monthlychart");
         while (el.firstChild) {
           el.removeChild(el.firstChild);
-          console.log("Remvoing Child el");
+          // console.log("Remvoing Child el");
         }
         var canvas = document.createElement("canvas");
         canvas.width = el.getAttribute("width");
@@ -540,7 +540,7 @@ $(function() {
             }
             else {
               // Request for web data didn't work, handle it
-              console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
+              // console.log("Error gettting data from either: url: " + url + " or url2: " + url2);
             }
           });
         }
@@ -572,31 +572,31 @@ $(function() {
       	var xhr = $.getJSON(url2).done(function(data) {
       		viewWeeklyTrendsChart(data, x, y, width, height);
       	}).fail(function(jqxhr, textStatus, error) {
-      		console.log("Error: " + error);
+      		// console.log("Error: " + error);
       	});
       */
       }
 
       function viewWeekTrendsChart(data, locationdata) {
-        console.log("RUNNING HERE");
-        console.log(data);
-        console.log(locationdata);
+        // console.log("RUNNING HERE");
+        // console.log(data);
+        // console.log(locationdata);
         if(typeof data == 'undefined') {
           return null;
         }
-        console.log(data);
+        // console.log(data);
         var headcounts = [];
         for(var i = 0; i < 7; i++) {
           for(var j = 0; j < 24; j++) {
             headcounts[i * 24 + j] = 0;
           }
         }
-        // console.log(headcounts);
+        // console.logheadcounts);
         var time;
         for(var stat in data) {
           headcounts[parseInt(data[stat].DayOfWeek) * 24 + parseInt(data[stat].Hour)] = parseInt(data[stat].Headcount);
         }
-        // console.log(hours);
+        // console.loghours);
         var averages = [];
         for(var k = 0; k < 7; k++){
           var total = 0;
@@ -608,18 +608,18 @@ $(function() {
             }
           }
           averages[k] = Math.round(total / count);
-          console.log(total);
-          console.log(count);
+          // console.log(total);
+          // console.log(count);
         }
-        console.log("HERE");
-        console.log(averages);
-        console.log("TOO FAR");
-        console.log(headcounts);
+        // console.log("HERE");
+        // console.log(averages);
+        // console.log("TOO FAR");
+        // console.log(headcounts);
 
         var el = document.getElementById("weeklychart");
         while (el.firstChild) {
           el.removeChild(el.firstChild);
-          console.log("Remvoing Child el");
+          // console.log("Remvoing Child el");
         }
         var canvas = document.createElement("canvas");
         canvas.width = el.getAttribute("width");
@@ -676,7 +676,7 @@ $(function() {
         if(typeof data == 'undefined') {
           return null;
         }
-        console.log(data);
+        // console.log(data);
         var valuesx = [];
         var valuesy = [];
         var headcounts = [];
@@ -687,9 +687,9 @@ $(function() {
             headcounts[i * 24 + j] = 0;
           }
         }
-        console.log(valuesx);
-        console.log(valuesy);
-        console.log(headcounts);
+        // console.log(valuesx);
+        // console.log(valuesy);
+        // console.log(headcounts);
         var time;
         for(var stat in data) {
           headcounts[parseInt(data[stat].DayOfWeek) * 24 + parseInt(data[stat].Hour)] = parseInt(data[stat].Headcount);
@@ -703,7 +703,7 @@ $(function() {
           // 	hours[parseInt(data[stat].DayOfWeek)][parseInt(data[stat].Hour)] = time;
           // }
         }
-        // console.log(hours);
+        // console.loghours);
         var averages = [];
         for(var k = 0; k < 7; k++){
           var total = 0;
@@ -715,18 +715,18 @@ $(function() {
             }
           }
           averages[k] = Math.round(total / count);
-          console.log(total);
-          console.log(count);
+          // console.log(total);
+          // console.log(count);
         }
-        console.log("HERE");
-        console.log(averages);
-        console.log("TOO FAR");
-        console.log(headcounts);
+        // console.log("HERE");
+        // console.log(averages);
+        // console.log("TOO FAR");
+        // console.log(headcounts);
 
         var weekly = document.getElementById("hourlychart");
         while (weekly.firstChild) {
           weekly.removeChild(weekly.firstChild);
-          console.log("Remvoing Child weekly");
+          // console.log("Remvoing Child weekly");
         }
         // var canvas2 = document.createElement("canvas");
         // canvas2.width = weekly.getAttribute("width");
@@ -791,8 +791,8 @@ $(function() {
         for(var i = 0; i < 7; i++) {
           headcounts2 = headcounts2.concat(headcounts.slice(i * 24, (i + 1) * 24).reverse());
         }
-        console.log(headcounts);
-        console.log(headcounts2);
+        // console.log(headcounts);
+        // console.log(headcounts2);
 
         headcounts = headcounts2;
         // for(var count in headcounts){
@@ -800,8 +800,8 @@ $(function() {
         // 		headcounts[count] = null;
         // 	}
         // }
-        console.log(headcounts);
-        console.log(headcounts2);
+        // console.log(headcounts);
+        // console.log(headcounts2);
 
         //use Raphael over chart.js for this, has heat chart built it
       	//demo here: http://dmitrybaranovskiy.github.io/raphael/github/dots.html
