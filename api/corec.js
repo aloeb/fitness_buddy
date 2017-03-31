@@ -51,8 +51,7 @@ corec.create_workout = function(user_id, workout, cb) {
 }
 
 corec.get_workouts = function(user_id, cb) {
-	User.findOne({ 'fb_id': user_id })
-		.populate('workouts')
+	User.find({ 'fb_id': user_id })
 		.exec((err, user) => {
 		if (err) {
 			cb([])
