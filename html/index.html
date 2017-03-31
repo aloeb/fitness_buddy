@@ -30,8 +30,21 @@
             <div class="pages navbar-through toolbar-through">
                <div data-page="main" class="page">
                   <div class="page-content">
+                    <div ng-if="logged_in()">
+                    <mwl-calendar
+                        view="calendarView"
+                        view-date="viewDate"
+                        events="events"
+                        view-title="calendarTitle"
+                        on-event-click="eventClicked(calendarEvent)"
+                        on-event-times-changed="calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+                        cell-is-open="true"
+
+                        >
+                    </mwl-calendar>
+                  </div>
                   <!-- IMPORTANT! TODO: before this is hosted see if we need to attribute these images. Logan has the links to the free photostock site-->
-                     <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
+                     <!-- <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
         				<div style="background-image:url(img/1.png); height:50vw; padding:70px 90px" valign="bottom" class="card-header color-white no-border">10 MINUTES</div>
      				</div></a>
                      <div class="card ks-card-header-pic">
@@ -51,7 +64,7 @@
      				</div>
      				<div class="card ks-card-header-pic">
         				<div style="background-image:url(img/8.png); height:50vw; padding:70px 100px" valign="bottom" class="card-header color-white no-border">BURN FAT</div>
-     				</div>
+     				</div> -->
                   </div>
                </div>
             </div>
@@ -227,12 +240,8 @@
             <div class="toolbar-inner">
             	<a href="#view-1" class="tab-link active"><span class="tabbar-label">Workouts</span></a>
             	<a href="#view-2" class="tab-link"><span class="tabbar-label">Schedule</span></a>
-              <div ng-if="logged_in()">
-                  <a href="#view-4" class="tab-link"><span class="tabbar-label">Settings</span></a>
-              </div>
-              <div ng-if="!logged_in()">
-                  <a href="#view-6" class="tab-link"><span class="tabbar-label">Settings</span></a>
-              </div>
+              <a ng-if="logged_in()" href="#view-4" class="tab-link"><span class="tabbar-label">Settings</span></a>
+              <a ng-if="!logged_in()" href="#view-6" class="tab-link"><span class="tabbar-label">Settings</span></a>
             </div>
          </div>
       </div>
@@ -246,5 +255,13 @@
     <!-- Path to app.js-->
     <script type="text/javascript" src="js/my-app.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <link href="bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
+    <script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js"></script>
+    <link href="bower_components/angular-ui-bootstrap/ui-bootstrap-csp.css" rel="stylesheet">
+    <script src="bower_components/angular-ui-bootstrap/ui-bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-moment/angular-moment.min.js"></script>
+    <script src="bower_components/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
   </body>
 </html>
