@@ -61,18 +61,149 @@ myApp.onPageInit('login', function(page){
     //     responsive: true
     // });
 });
-angular.module('myApp', ['ngCookies'])
+angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate', 'angularMoment'])
     .config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode({
           enabled: true,
           requireBase: false
         });
     }])
+    .config(['calendarConfig', function(calendarConfig) {
+
+        // View all available config
+        console.log(calendarConfig);
+
+        // Change the month view template globally to a custom template
+        // calendarConfig.templates.calendarMonthView = 'path/to/custom/template.html';
+
+        // Use either moment or angular to format dates on the calendar. Default angular. Setting this will override any date formats you have already set.
+        calendarConfig.dateFormatter = 'moment';
+
+        // This will configure times on the day view to display in 24 hour format rather than the default of 12 hour
+        calendarConfig.allDateFormats.moment.date.hour = 'HH:mm';
+
+        // This will configure the day view title to be shorter
+        calendarConfig.allDateFormats.moment.title.day = 'ABC ddd D MMM';
+
+        // This will set the week number hover label on the month view
+        calendarConfig.i18nStrings.weekNumber = 'Week {week}';
+
+        // This will display all events on a month view even if they're not in the current month. Default false.
+        calendarConfig.displayAllMonthEvents = true;
+
+        // Make the week view more like the day view, ***with the caveat that event end times are ignored***.
+        calendarConfig.showTimesOnWeekView = true;
+
+      }])
     .controller('MainController', [
         '$scope',
         '$cookies',
         '$location',
-        function($scope, $cookies, $location) {
+        'moment',
+        'calendarConfig',
+        '$http',
+        function($scope, $cookies, $location, moment, alert, calendarConfig, $http) {
+          var vm = this;
+          console.log(calendarConfig);
+          //These variables MUST be set as a minimum for the calendar to work
+          $scope.viewDate = new Date();
+          $scope.calendarView = 'week';
+          var actions = [{
+                label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
+                onClick: function(args) {
+                  alert.show('Edited', args.calendarEvent);
+                }
+              }, {
+                label: '<i class=\'glyphicon glyphicon-remove\'></i>',
+                onClick: function(args) {
+                  alert.show('Deleted', args.calendarEvent);
+                }
+              }];
+              // console.log(moment().startOf('week').add(1, 'week').add(9, 'hours').toDate());
+              $scope.events = [
+                {
+                  title: 'An event',
+                  color: 'red',
+                  startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
+                  endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
+                  draggable: true,
+                  resizable: true,
+                  actions: actions
+                }, {
+                  title: '<i class="glyphicon glyphicon-asterisk"></i> <span class="text-primary">Another event</span>, with a <i>html</i> title',
+                  color: 'red',
+                  startsAt: moment().subtract(1, 'day').toDate(),
+                  endsAt: moment().add(5, 'days').toDate(),
+                  draggable: true,
+                  resizable: true,
+                  actions: actions
+                }, {
+                  title: 'This is a really long event title that occurs on every year',
+                  color: 'red',
+                  startsAt: moment().startOf('day').add(7, 'hours').toDate(),
+                  endsAt: moment().startOf('day').add(19, 'hours').toDate(),
+                  recursOn: 'year',
+                  draggable: true,
+                  resizable: true,
+                  actions: actions
+                }
+              ];
+
+              $scope.cellIsOpen = true;
+
+              $scope.addEvent = function() {
+                $scope.events.push({
+                  title: 'New event',
+                  startsAt: moment().startOf('day').toDate(),
+                  endsAt: moment().endOf('day').toDate(),
+                  color: calendarConfig.colorTypes.important,
+                  draggable: true,
+                  resizable: true
+                });
+              };
+
+              $scope.eventClicked = function(event) {
+                alert.show('Clicked', event);
+              };
+
+              $scope.eventEdited = function(event) {
+                alert.show('Edited', event);
+              };
+
+              $scope.eventDeleted = function(event) {
+                alert.show('Deleted', event);
+              };
+
+              $scope.eventTimesChanged = function(event) {
+                alert.show('Dropped or resized', event);
+              };
+
+              $scope.toggle = function($event, field, event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                event[field] = !event[field];
+              };
+
+              $scope.timespanClicked = function(date, cell) {
+
+                if ($scope.calendarView === 'month') {
+                  if (($scope.cellIsOpen && moment(date).startOf('day').isSame(moment($scope.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
+                    $scope.cellIsOpen = false;
+                  } else {
+                    $scope.cellIsOpen = true;
+                    $scope.viewDate = date;
+                  }
+                } else if ($scope.calendarView === 'year') {
+                  if (($scope.cellIsOpen && moment(date).startOf('month').isSame(moment($scope.viewDate).startOf('month'))) || cell.events.length === 0) {
+                    $scope.cellIsOpen = false;
+                  } else {
+                    $scope.cellIsOpen = true;
+                    $scope.viewDate = date;
+                  }
+                }
+              }
+
+          console.log(vm);
             var token = $cookies.get('token')
             if (!token) {
                 var searchObject = $location.search()
@@ -82,6 +213,13 @@ angular.module('myApp', ['ngCookies'])
                 }
             }
             $scope.token = token
+            console.log(token);
+            // $http({
+            //   method: 'POST',
+            //   url: 'http://localhost:8081/api/v1/users/get_calendar',
+            //   body: {"token": token},
+            //   headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            // });
             $scope.login = function() {
                 window.location.href = "http://localhost:8081/api/v1/auth/facebook";
             }
