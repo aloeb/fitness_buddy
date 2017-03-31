@@ -99,11 +99,12 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
         '$scope',
         '$cookies',
         '$location',
+        '$http',
         'moment',
         'calendarConfig',
-        '$http',
-        function($scope, $cookies, $location, moment, alert, calendarConfig, $http) {
+        function($scope, $cookies, $location, $http, moment, alert, calendarConfig) {
           var vm = this;
+          // $http.get('http://httpbin.org/ip').then(function(){console.log("success")}, function(){console.log("error")});
           console.log(calendarConfig);
           //These variables MUST be set as a minimum for the calendar to work
           $scope.viewDate = new Date();
@@ -214,12 +215,10 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
             }
             $scope.token = token
             console.log(token);
-            // $http({
-            //   method: 'POST',
-            //   url: 'http://localhost:8081/api/v1/users/get_calendar',
-            //   body: {"token": token},
-            //   headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            // });
+            $http.post('http://localhost:8081/api/v1/users/get_calendar', {"token": token}).then(function(data){$scope.googleCalendar = data; console.log(data);}, function(){console.log("error")});
+            $http.post('http://localhost:8081/api/v1/users/get_user', {"token": token}).then(function(data){$scope.username = data.data.name; $scope.userdata = data.data; console.log(data); console.log(data.data.name);}, function(){console.log("error")});
+            $http.post('http://localhost:8081/api/v1/users/get_workouts', {"token": token}).then(function(data){$scope.workouts = data.data; console.log(data);}, function(){console.log("error")});
+
             $scope.login = function() {
                 window.location.href = "http://localhost:8081/api/v1/auth/facebook";
             }

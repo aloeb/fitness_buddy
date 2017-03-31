@@ -42,6 +42,7 @@
 
                         >
                     </mwl-calendar>
+                    {{googleCalendar}}
                   </div>
                   <!-- IMPORTANT! TODO: before this is hosted see if we need to attribute these images. Logan has the links to the free photostock site-->
                      <!-- <a href="#view-9" class="tab-link"><div class="card ks-card-header-pic">
@@ -113,7 +114,7 @@
             <!-- Login form -->
             <form>
               <div class="list-block">
-                <ul>
+                <!-- <ul>
                   <li class="item-content">
                     <div class="item-inner">
                       <div class="item-title label">Username</div>
@@ -130,14 +131,14 @@
                       </div>
                     </div>
                   </li>
-                </ul>
+                </ul> -->
               </div>
               <div class="list-block">
-                <ul>
+                <!-- <ul>
                   <li>
                     <a href="#" class="item-link list-button">Sign In</a>
                   </li>
-                </ul>
+                </ul> -->
                 <div class="list-block-label">Some text with login information.</div>
               </div>
                             <div class="list-block">
@@ -148,11 +149,11 @@
                 </ul>
               </div>
                             <div class="list-block">
-                <ul>
+                <!-- <ul>
                   <li>
                     <a href="#" class="item-link list-button"><img src="img/Google.png" style="width:80%;height:80%;"></a>
                   </li>
-                </ul>
+                </ul> -->
               </div>
             </form>
           </div>
@@ -180,7 +181,7 @@
                               </a>
                            </li>
                            <li>
-                              <a href="services.html" class="item-link">
+                              <a href="schedule.html" class="item-link">
                                  <div class="item-content">
                                     <div class="item-inner">
                                        <div class="item-title">My Schedule</div>
@@ -230,7 +231,9 @@
                         </ul>
                      </div>
                      <div class="content-block">
+                       <h2>Welcome back {{username}}!</h2>
                         <p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+                        <p style="word-wrap: break-word;">{{userdata}}</p>
                      </div>
                   </div>
                </div>
