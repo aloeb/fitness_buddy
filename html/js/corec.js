@@ -18,7 +18,7 @@ $(function() {
   function coRecHours(){
     var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
     var xhr = $.getJSON(url).done(function(data) {
-      dynamicAlert(data);
+      // dynamicAlert(data);
     }).fail(function() {
       console.log("Error loading " + url);
     });
@@ -811,7 +811,7 @@ $(function() {
             console.log("Error loading " + url);
           });
 
-          updateMonthlyTrendsChart(locationid);
+          // updateMonthlyTrendsChart(locationid);
           updateWeeklyTrendsChart(locationid);
           updateWeekTrendsChart(locationid);
           initLastUpdatedTime(locationid, $("#lastupdatedtimetrends"));
@@ -833,7 +833,6 @@ $(function() {
       app.initCurrentActivityCharts = initCurrentActivityCharts;
       app.initTrendsCharts = initTrendsCharts;
       app.updateTrendsCharts = updateTrendsCharts;
-      app.resizeHandler = resizeHandler;
       app.dynamicAlert = dynamicAlert;
 
     });
