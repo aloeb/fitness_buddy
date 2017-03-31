@@ -15,15 +15,6 @@ var Calendar = require('../models/calendar');
 // Extra files
 var corec_data = require('./corec.js')
 var calendar_data = require('./calendar.js')
-/* TO GET COREC USAGE DATA AS JSON OBJ:
-
-corec_data.get_current_usage(
-    (arg) => {
-        console.log(arg)
-        next()
-    }
-);
-*/
 
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
@@ -81,6 +72,7 @@ router.route('/auth/facebook/callback').get(
                     var newAccount = User();
                     newAccount.fb_id = user_id;
                     newAccount.name = req.user.displayName;
+                    newAccount.workouts = []
 
                     newAccount.save((err) => {
                         if (err) {
@@ -104,6 +96,16 @@ router.route('/auth/facebook/callback').get(
 );
 
 
+router.route('/users/get_user').post((req, res) => {
+    User.findOne({ 'fb_id': req.id}, (err, user) => {
+        if (err) {
+            res.status(403).json({"nope": "you suck"})
+        } else {
+            res.status(200).json(user)
+        }
+    });
+});
+
 /*
 
 BEGIN WORKOUT STUFF
@@ -113,9 +115,32 @@ WIP - Adam L
 */
 
 /*
-Takes object of form as body parameter "workout":
+Takes body parameter "usage_type" which can take values:
+
+    weeklytrends
+    lastupdatedtime
+    currentactivity
+    locations
+    monthlytrends
+
+And takes a "location_id" optionally
+
+*/
+router.route('/corec/get_usage').post((req, res) => {
+    corec_data.get_usage(req.body.usage_type, req.body.location_id, (data) => {
+        res.status(200).json(data)
+    });
+});
+
+/*
+Takes object of form as body parameter "routine":
 {
-    date: <date_completed_or_scheduled>,
+    name: <name of workout routine>,
+    tags: [
+        <first_tag>,
+        <second_tag>,
+        ...
+    ],
     exercises: [
         <mongo_id_of_first_exercise>,
         <mongo_id_of_second_exercise>,
@@ -123,10 +148,25 @@ Takes object of form as body parameter "workout":
     ]
 }
 */
-router.route('/users/create_workout').post((req, res) => {
-    corec_data.create_workout(req.id, req.body.workout, (success) => {
+router.route('/users/create_routine').post((req, res) => {
+    corec_data.create_routine(req.id, req.body.routine, (success, id) => {
         if (success) {
-            res.status(200)
+            res.status(200).json({'r_id': id})
+        } else {
+            res.status(96)
+        }
+    });
+});
+
+/*
+Takes two body parameters:
+    the id of the workout: 'routine'
+    the date to schedule: 'date'
+*/
+router.route('/users/schedule_workout').post((req, res) => {
+    corec_data.schedule_workout(req.id, req.body.routine, req.body.date, (success, wo_id) => {
+        if (success) {
+            res.status(200).json({'wo_id': wo_id})
         } else {
             res.status(96)
         }
@@ -143,9 +183,9 @@ Takes object of form as body parameter "exercise":
 }
 */
 router.route('/users/create_exercise').post((req, res) => {
-    corec_data.create_exercise(req.id, req.body.exercise, (success) => {
+    corec_data.create_exercise(req.id, req.body.exercise, (success, ex_id) => {
         if (success) {
-            res.status(200)
+            res.status(200).json({'ex_id': ex_id})
         } else {
             res.status(96)
         }
@@ -163,11 +203,32 @@ router.route('/users/get_workouts').post((req, res) => {
 })
 
 /*
+Gets routines. Basically all of them.
+
+Add the parameter "filters" of the following form:
+{
+    rec: <true_false>,
+    tags: [ tag1, tag2, ... ]
+}
+*/
+router.route('/users/get_routines').post((req, res) => {
+    corec_data.get_routines(req.id, req.body.filters, (routines) => {
+        res.status(200).json(routines)
+    });
+})
+
+/*
 Will have ability to take parameters to filter, but for now
 returns all exercises.
+
+Add the parameter "filters" of the following form:
+{
+    rec: <true_false>,
+    types: [ core, legs, ... ]
+}
 */
 router.route('/users/get_exercises').post((req, res) => {
-    corec_data.get_exercises(null, (exercises) => {
+    corec_data.get_exercises(req.id, req.body.filters, (exercises) => {
         res.status(200).json(exercises)
     });
 });
@@ -223,7 +284,7 @@ router.route('/users/auth_google/callback').get(
     (req, res) => {
         var userInfo = req.user;
 
-        User.findOne({ 'fb_id': req.query.state }, function(err, user) {
+        User.findOne({ 'fb_id': req.id }, function(err, user) {
             if (err) {
                 res.status(403).json({
                     Error: err

@@ -1,5 +1,16 @@
 $(function() {
 
+  var user_token
+
+  function initUser() {
+    user_token = $.cookie("token")
+    if (!user_token) {
+      window.location.href = "http://localhost:8081/"
+      return false
+    }
+    return true
+  }
+
   //Avoid using api calls too frequently not sure what if any rate limits tehre are, we might be able to find out, caching would be best probaly
   /* 'https://www.purdue.edu/DRSFacilityUsageAPI/locations' JSON response looks like:
   [{
@@ -16,12 +27,15 @@ $(function() {
   */
 
   function coRecHours(){
-    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
-    var xhr = $.getJSON(url).done(function(data) {
-      // dynamicAlert(data);
-    }).fail(function() {
-      console.log("Error loading " + url);
-    });
+    var xhr = $.ajax({type: 'POST',
+        url: 'http://localhost:8081/api/v1/corec/get_usage',
+        data: JSON.stringify({ usage_type: "weeklytrends", token: user_token }),
+        contentType: 'application/json',
+        //contentType: 'text/plain',
+        //crossDomain: true,
+        success: function(data){
+          //dynamicAlert(data)
+        }})
   }
   // Thursday	5:30AM–12AM 5:30, 0
   // Friday	5:30AM–12AM  5:30, 0
@@ -71,15 +85,19 @@ $(function() {
     }
     also available: https://www.purdue.edu/DRSFacilityUsageAPI/lastupdatedtime/{LocationId}
     */
-    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "lastupdatedtime";
+    var data = { usage_type: "lastupdatedtime", token: user_token }
     if(typeof locationid != 'undefined') {
-      url = url + "/" + locationid;
+      data["location_id"] = locationid;
     }
-    var xhr = $.getJSON(url).done(function(data) {
-      viewLastUpdatedTime(data, el);
-    }).fail(function() {
-      console.log("Error loading " + url);
-    });
+    var xhr = $.ajax({type: 'POST',
+        url: 'http://localhost:8081/api/v1/corec/get_usage',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        //contentType: 'text/plain',
+        //crossDomain: true,
+        success: function(data){
+          viewLastUpdatedTime(data, el);
+        }})
   }
 
   function viewLastUpdatedTime(data, el) {
@@ -111,17 +129,29 @@ $(function() {
     }).spin();
     $('#currentactivity').append(spinner.el);
 
-    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "currentactivity";
-    var url2 = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+    var arg1 = "currentactivity"
+    var arg2 = "locations"
 
     var currentactivityData, locationData;
     $.when(
-      $.getJSON(url, function(data) {
-        currentactivityData = data;
-      }),
-      $.getJSON(url2, function(data) {
-        locationData = data;
-      })
+      $.ajax({type: 'POST',
+        url: 'http://localhost:8081/api/v1/corec/get_usage',
+        data: JSON.stringify({ usage_type: arg1, token: user_token }),
+        contentType: 'application/json',
+        //contentType: 'text/plain',
+        //crossDomain: true,
+        success: function(data){
+          currentactivityData = data;
+        }}),
+      $.ajax({type: 'POST',
+        url: 'http://localhost:8081/api/v1/corec/get_usage',
+        data: JSON.stringify({ usage_type: arg2, token: user_token }),
+        contentType: 'application/json',
+        //contentType: 'text/plain',
+        //crossDomain: true,
+        success: function(data){
+          locationData = data;
+        }})
     ).then(function() {
       if (currentactivityData && locationData) {
         viewCurrentActivityCharts(currentactivityData, locationData);
@@ -135,13 +165,16 @@ $(function() {
   }
 
   function getLocationData(){
-    var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
     var locationdata;
-    var xhr = $.getJSON(url).done(function(data) {
-      return data;
-    }).fail(function (jqxhr, textStatus, error) {
-      console.log("Error loading " + url);
-    });
+    var xhr = $.ajax({type: 'POST',
+        url: 'http://localhost:8081/api/v1/corec/get_usage',
+        data: JSON.stringify({ usage_type: "locations", token: user_token }),
+        contentType: 'application/json',
+        //contentType: 'text/plain',
+        //crossDomain: true,
+        success: function(data){
+          return data
+        }});
     return xhr;
   }
 
@@ -334,15 +367,19 @@ $(function() {
 
 
       function initMonthlyTrendsChart(locationid) {
-        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "monthlytrends";
+        var data = { usage_type: "monthlytrends", token: user_token}
         if(typeof locationid != 'undefined') {
-          url = url + "/" + locationid;
+          data["location_id"] = locationid
         }
-        var xhr = $.getJSON(url).done(function(data) {
-          viewMonthlyTrendsChart(data);
-        }).fail(function() {
-          console.log("Error loading " + url);
-        });
+        var xhr = $.ajax({type: 'POST',
+          url: 'http://localhost:8081/api/v1/corec/get_usage',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          //contentType: 'text/plain',
+          //crossDomain: true,
+          success: function(data){
+            viewMonthlyTrendsChart(data);
+          }});
       }
 
       function viewMonthlyTrendsChart(data) {
@@ -456,14 +493,14 @@ $(function() {
         it apears you can call weeklytrends without a locationid but that just returns info with CoRec, that might be junk or it could be staff count or something
         ignore for now unless we find value in the data EDIT: The number seems to small to be staff since it says 6, 8, 11...not even sure what it represents so no value right now (don't use)
         */
-        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
+        var data1 = {  usage_type: "weeklytrends", token: user_token }
         if(typeof locationid != 'undefined') {
-          url = url + "/" + locationid;
+          data1["location_id"] = locationid
         }
 
-        var url2= "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+        var data2 = {  usage_type: "locations", token: user_token }
         if(typeof locationid != 'undefined') {
-          url2 = url2 + "/" + locationid;
+          data2["location_id"] = locationid
         }
 
         var chart = document.getElementById("weeklychart");
@@ -478,12 +515,24 @@ $(function() {
 
           var weeklyData, locationData;
           $.when(
-            $.getJSON(url, function(data) {
-              weeklyData = data;
-            }),
-            $.getJSON(url2, function(data) {
-              locationData = data;
-            })
+            $.ajax({type: 'POST',
+              url: 'http://localhost:8081/api/v1/corec/get_usage',
+              data: JSON.stringify(data1),
+              contentType: 'application/json',
+              //contentType: 'text/plain',
+              //crossDomain: true,
+              success: function(data){
+                weeklyData = data;
+              }}),
+            $.ajax({type: 'POST',
+              url: 'http://localhost:8081/api/v1/corec/get_usage',
+              data: JSON.stringify(data2),
+              contentType: 'application/json',
+              //contentType: 'text/plain',
+              //crossDomain: true,
+              success: function(data){
+                locationData = data;
+              }})
           ).then(function() {
             if (weeklyData && locationData) {
               viewWeekTrendsChart(weeklyData, locationData);
@@ -500,15 +549,19 @@ $(function() {
 
 
       function initWeeklyTrendsChart(locationid, x, y, width, height) {
-        var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "weeklytrends";
+        var data = { usage_type: "weeklytrends", token: user_token }
         if(typeof locationid != 'undefined') {
-          url = url + "/" + locationid;
+          data["location_id"] = locationid;
         }
-        var xhr = $.getJSON(url).done(function(data) {
-          viewWeeklyTrendsChart(data, x, y, width, height);
-        }).fail(function() {
-          console.log("Error loading " + url);
-        });
+        var xhr = $.ajax({type: 'POST',
+              url: 'http://localhost:8081/api/v1/corec/get_usage',
+              data: JSON.stringify(data),
+              contentType: 'application/json',
+              //contentType: 'text/plain',
+              //crossDomain: true,
+              success: function(data){
+                viewWeeklyTrendsChart(data, x, y, width, height);
+              }})
         //commenting out for now, this is only real time, so have to work around it
       /*
       	TODO: get wether the location is active or closed
@@ -800,16 +853,19 @@ $(function() {
       	  }]
       	 */
         if(app.trendsChartsActive) {
-          var url = "https://www.purdue.edu/DRSFacilityUsageAPI/" + "locations";
+          var data = { usage_type: "locations", token: user_token }
           if(typeof locationid != 'undefined') {
-            url = url + "/" + locationid;
+            data["location_id"] = locationid
           }
-          var xhr = $.getJSON(url).done(function(data) {
-            $("#locationname").html(data.LocationName);
-            console.log(data);
-          }).fail(function() {
-            console.log("Error loading " + url);
-          });
+          var xhr = $.ajax({type: 'POST',
+            url: 'http://localhost:8081/api/v1/corec/get_usage',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            //contentType: 'text/plain',
+            //crossDomain: true,
+            success: function(data){
+              $("#locationname").html(data.LocationName);
+            }})
 
           // updateMonthlyTrendsChart(locationid);
           updateWeeklyTrendsChart(locationid);
@@ -829,6 +885,7 @@ $(function() {
 
       app.trendsChartsActive = false;
       app.trendsChartsLocationID = "";
+      app.initUser = initUser;
       app.initLastUpdatedTime = initLastUpdatedTime;
       app.initCurrentActivityCharts = initCurrentActivityCharts;
       app.initTrendsCharts = initTrendsCharts;

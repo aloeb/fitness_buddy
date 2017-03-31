@@ -92,6 +92,9 @@ angular.module('myApp', ['ngCookies'])
             $scope.logged_in = function() {
                 return (typeof $scope.token != 'undefined')
             }
+            $scope.import_cal = function() {
+                window.location.href = "http://localhost:8081/api/v1/users/auth_google?state=" + $scope.token
+            }
             // console.log($username);
             // console.log($password);
         }
