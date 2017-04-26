@@ -9,6 +9,15 @@ var Routine = require('../models/routine');
 
 var corec = new Object()
 
+var tag_to_loc = {
+	"legs": ["45f053e9-67ed-48f2-bcf6-c03b86f1e261"],
+	"core": ["b100914b-6a26-4779-9164-b893cd05d5e7"],
+	"chest": ["61b3abc1-bb87-413b-b933-827bc6d58e0f,45f053e9-67ed-48f2-bcf6-c03b86f1e261"],
+	"arms": ["61b3abc1-bb87-413b-b933-827bc6d58e0f,45f053e9-67ed-48f2-bcf6-c03b86f1e261"],
+	"cardio": ["e9d35ffa-e7ff-4ba5-8f27-b4a12df95012", "f77a2aee-dd9e-4cca-ac42-a475012e85cc"],
+	"test": ["e9d35ffa-e7ff-4ba5-8f27-b4a12df95012"]
+}
+
 corec.get_usage = function(type, loc_id, cb) {
 	var url = 'https://www.purdue.edu/DRSFacilityUsageAPI/' + type
 	if (loc_id) {
@@ -133,12 +142,43 @@ corec.get_exercises = function(user_id, filters, cb) {
 corec.get_routines = function(user_id, filters, cb) {
 	var query = {}
 	var waiting = false
-	var finish = (query) => {
+	var finish = (query, date) => {
 		Routine.find(query, (err, routines) => {
 			if (err) {
 				cb([])
 			} else {
-				cb(routines)
+				if (date) {
+					done = routines.length
+					removed = 0
+					for (i = 0; i < routines.length; i++) {
+						not_crowded = function(loc, id, cb) {
+							corec.get_usage("locations", loc, (data) => {
+								capactity = data.Capacity
+								corec.get_usage("weeklytrends", loc, (data) => {
+									time = new Date(date)
+									data.forEach((item) => {
+										if (time.getDay() == item.DayOfWeek && time.getHours() == item.Hour) {
+											cb(id, item.Headcount > capactity * 0.6)
+											return
+										}
+									})
+								})
+							})
+						}
+						not_crowded(tag_to_loc[routines[i].tags[0]], i, (id, crowded) => {
+							if (crowded) {
+								removed = 1
+								routines.splice(id, 1)
+							}
+							done--
+							if (done <= 0) {
+								cb(routines)
+							}
+						})
+					}
+				} else {
+					cb(routines)
+				}
 			}
 		});
 	}
@@ -185,11 +225,15 @@ corec.get_routines = function(user_id, filters, cb) {
 					})
 				}
 				query['tags'] = { $in: compare }
-				finish(query)
+				date = null
+				if (filters['date']) {
+					date = Date.parse(filters['date'])
+				}
+				finish(query, date)
 			});
 		}
 	}
-	if (!waiting) { finish(query) }
+	if (!waiting) { finish(query, null) }
 	
 }
 

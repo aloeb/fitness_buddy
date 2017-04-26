@@ -16,6 +16,8 @@ var Calendar = require('../models/calendar');
 var corec_data = require('./corec.js')
 var calendar_data = require('./calendar.js')
 
+// TODO: take corec busy into account when reccomending for a time
+
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
     if (req.url.substring(0,14) === '/auth/facebook') {
@@ -208,6 +210,7 @@ Gets routines. Basically all of them.
 Add the parameter "filters" of the following form:
 {
     rec: <true_false>,
+    date: <RFC3339 timestamp with mandatory time zone offset>,
     tags: [ tag1, tag2, ... ]
 }
 */
@@ -330,13 +333,61 @@ router.route('/users/auth_google/callback').get(
 /*
 NOW ACTUAL GETTING CALENDAR STUFF
 
-WIP - Adam L
+{
+    start_time: <RFC3339 timestamp with mandatory time zone offset>,
+    end_time: <RFC3339 timestamp with mandatory time zone offset>
+}
 
 */
 
 router.route('/users/get_calendar').post((req, res) => {
-    calendar_data.get_user_calendar(req.id, (events) => {
+    calendar_data.get_user_calendar(req.id, req.body.start_time, req.body.end_time, (events) => {
         res.json({ 'events': events });
+    });
+})
+
+/*
+    Get reccomended workout time
+
+    {
+        start_time: <RFC3339 timestamp with mandatory time zone offset>,
+        end_time: <RFC3339 timestamp with mandatory time zone offset>
+    }
+*/
+router.route('/users/get_rec_workout_times').post((req, res) => {
+    calendar_data.get_user_calendar(req.id, req.body.start_time, req.body.end_time, (events) => {
+        //res.json({ 'events': events });
+
+        enough_time = function(first, second) {
+            return (second - first)/(1000*60) >= 90
+        }
+
+        suggestions = []
+        latest_end = null
+        events.forEach((event) => {
+            start = Date.parse(event.start.dateTime)
+            end = Date.parse(event.end.dateTime)
+
+            if (!latest_end) {
+                latest_end = end
+                if (enough_time(Date.parse(req.body.start_time), start)) {
+                    suggestions.push(new Date(start-(90*60*1000)))
+                }
+            } else {
+                if (enough_time(latest_end, start)) {
+                    suggestions.push(new Date(latest_end))
+                }
+
+                if (end > latest_end) {
+                    latest_end = end
+                }
+            }
+        });
+        if (latest_end && enough_time(latest_end, Date.parse(req.body.end_time))) {
+            suggestions.push(new Date(latest_end))
+        }
+
+        res.json({'suggestions': suggestions})
     });
 })
 

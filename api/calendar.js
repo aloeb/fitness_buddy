@@ -78,7 +78,7 @@ If user hasn't authorized Google yet, returns null.
 
 All stuff returned in callback function cb
 */
-cal_access.get_user_calendar = function(user_id, cb) {
+cal_access.get_user_calendar = function(user_id, start_date, end_date, cb) {
 	get_credentials(user_id, (creds) => {
 		if (!creds) { cb(null) }
 		else {
@@ -86,10 +86,11 @@ cal_access.get_user_calendar = function(user_id, cb) {
 			calendar.events.list({
 			    auth: creds,
 			    calendarId: 'primary',
-			    timeMin: (new Date()).toISOString(),
-			    maxResults: 10,
+			    timeMin: start_date,
+			    timeMax: end_date,
+			    maxResults: 100,
 			    singleEvents: true,
-			    orderBy: 'startTime'
+			    orderBy: 'startTime',
 			}, function(err, response) {
 			    if (err) {
 			      	console.log('The API returned an error: ' + err);
