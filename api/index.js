@@ -168,9 +168,11 @@ Takes two body parameters:
 router.route('/users/schedule_workout').post((req, res) => {
     corec_data.schedule_workout(req.id, req.body.routine, req.body.date, (success, wo_id) => {
         if (success) {
-            res.status(200).json({'wo_id': wo_id})
+            calendar_data.set_event(req.id, new Date(req.body.date), new Date(Date.parse(req.body.date) + (1000*60*90)), (success) => {
+                res.status(200).json({'wo_id': wo_id})
+            })
         } else {
-            res.status(96)
+            res.status(404).json({'failed': 'failed'})
         }
     });
 });
@@ -270,7 +272,7 @@ passport.use(new GoogleStrategy({
 
 router.route('/users/auth_google').get((req, res, next) => {
     passport.authenticate('google', {
-        scope: ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/plus.login'],
+        scope: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/plus.login'],
         accessType: 'offline',
         approvalPrompt: 'force',
         state: req.token

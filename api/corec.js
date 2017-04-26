@@ -73,10 +73,10 @@ corec.schedule_workout = function(user_id, routine, date, cb) {
 			if (err) {
                 cb(false)
             } else {
-            	console.log(user)
-            	user.workouts += [saved._id]
+            	user.workouts.push([saved._id])
             	user.save((err) => {
             		if (err) {
+            			console.log(err)
             			cb(false)
             		} else {
             			cb(true, saved._id)

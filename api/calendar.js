@@ -104,5 +104,33 @@ cal_access.get_user_calendar = function(user_id, start_date, end_date, cb) {
 	});
 }
 
+/*
+	Creates an event on the users calendar, well probably a workout, not an event
+*/
+cal_access.set_event = function(user_id, start_time, end_time, cb) {
+	get_credentials(user_id, (creds) => {
+		if (!creds) { cb(null) }
+		else {
+			var calendar = google.calendar('v3');
+			calendar.events.insert({
+				auth: creds,
+				calendarId: 'primary',
+				resource: {
+					start: {dateTime:start_time},
+					end: {dateTime:end_time},
+					summary: "Fitness Buddy Workout"
+				}
+			}, function(err, response) {
+				if (err) {
+			      	console.log('The API returned an error: ' + err);
+			      	cb(false)
+			    } else {
+			    	cb(true)
+			    }
+			})
+		}
+	})
+}
+
 
 module.exports = cal_access
