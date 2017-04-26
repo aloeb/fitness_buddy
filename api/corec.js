@@ -149,7 +149,7 @@ corec.get_routines = function(user_id, filters, cb) {
 			} else {
 				if (date) {
 					done = routines.length
-					removed = 0
+					removed = []
 					for (i = 0; i < routines.length; i++) {
 						not_crowded = function(loc, id, cb) {
 							corec.get_usage("locations", loc, (data) => {
@@ -167,8 +167,11 @@ corec.get_routines = function(user_id, filters, cb) {
 						}
 						not_crowded(tag_to_loc[routines[i].tags[0]], i, (id, crowded) => {
 							if (crowded) {
-								removed = 1
+								removed.forEach((rem) => {
+									if (rem < id) { id -= 1 }
+								})
 								routines.splice(id, 1)
+								removed.append(id)
 							}
 							done--
 							if (done <= 0) {
