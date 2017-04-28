@@ -100,6 +100,28 @@ corec.get_workouts = function(user_id, cb) {
 	});
 }
 
+corec.share_workout = function(user_id, wo_id, cb) {
+	Workout.findOne({ '_id': wo_id })
+		   .populate({path: 'routine'}) 
+		   .exec((err, wo) => {
+		if (err) {
+			cb(null)
+			return
+		}
+		User.findOne({ '_id': user_id }, (err, user) => {
+			if (err) {
+				cb(null)
+				return
+			}
+			cb({
+				name: wo.routine.name,
+				date: wo.completed_on,
+				user_name: user.name
+			})
+		})
+	})
+}
+
 corec.create_exercise = function(user_id, exercise, cb) {
 	User.findOne({ 'fb_id': user_id}, (err, user) => {
 		if (err) {

@@ -123,34 +123,7 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                 }
               }];
               // console.log(moment().startOf('week').add(1, 'week').add(9, 'hours').toDate());
-              $scope.events = [
-                {
-                  title: 'An event',
-                  color: 'red',
-                  startsAt: moment().startOf('week').add(2, 'days').add(8, 'hours').toDate(),
-                  endsAt: moment().startOf('week').add(2, 'days').add(9, 'hours').toDate(),
-                  draggable: true,
-                  resizable: true,
-                  actions: actions
-                }, {
-                  title: '<i class="glyphicon glyphicon-asterisk"></i> <span class="text-primary">Another event</span>, with a <i>html</i> title',
-                  color: 'red',
-                  startsAt: moment().subtract(1, 'day').toDate(),
-                  endsAt: moment().add(5, 'days').toDate(),
-                  draggable: true,
-                  resizable: true,
-                  actions: actions
-                }, {
-                  title: 'This is a really long event title that occurs on every year',
-                  color: 'red',
-                  startsAt: moment().startOf('day').add(7, 'hours').toDate(),
-                  endsAt: moment().startOf('day').add(19, 'hours').toDate(),
-                  recursOn: 'year',
-                  draggable: true,
-                  resizable: true,
-                  actions: actions
-                }
-              ];
+              $scope.events = [];
 
               $scope.cellIsOpen = true;
 
@@ -166,7 +139,11 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
               };
 
               $scope.eventClicked = function(event) {
-                alert.show('Clicked', event);
+                if (event.type == 'suggestion') {
+                  console.log("hello world")
+                } else {
+                  alert.show('Clicked', event);
+                }
               };
 
               $scope.eventEdited = function(event) {
@@ -217,7 +194,43 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
             }
             $scope.token = token
             console.log(token);
-            $http.post('http://localhost:8081/api/v1/users/get_calendar', {"token": token}).then(function(data){$scope.googleCalendar = data; console.log(data);}, function(){console.log("error")});
+            today = new Date(Date.now())
+            next_week = new Date(Date.now() + (1000*60*60*24*7))
+            $http.post('http://localhost:8081/api/v1/users/get_calendar', {"token": token, "start_time": today, "end_time": next_week}).then(function(data){
+              $scope.googleCalendar = data;
+              data.data.events.forEach((event) => {
+                $scope.events.push({
+                  title: event.summary,
+                  endsAt: new Date(Date.parse(event.end.dateTime)),
+                  startsAt: new Date(Date.parse(event.start.dateTime)),
+                  color: "red",
+                  draggable: true,
+                  resizable: true,
+                  actions: actions
+                })
+              })
+            }, function(){
+              console.log("error")
+            });
+            later_today = new Date(Date.now())
+            later_today.setHours(24,0,0,0)
+            $http.post('http://localhost:8081/api/v1/users/get_rec_workout_times', {"token": token, "start_time": today, "end_time": later_today}).then(function(data){
+              $scope.googleCalendar = data;
+              console.log(data);
+              data.data.suggestions.forEach((time) => {
+                $scope.events.push({
+                  title: "Possible workout time!",
+                  startsAt: new Date(Date.parse(time)),
+                  endsAt: new Date(Date.parse(time)+(1000*60*90)),
+                  color: "blue",
+                  draggable: true,
+                  resizable: true,
+                  type: 'suggestion'
+                })
+              })
+            }, function(){
+              console.log("error")
+            });
             $http.post('http://localhost:8081/api/v1/users/get_user', {"token": token}).then(function(data){$scope.username = data.data.name; $scope.userdata = data.data; console.log(data); console.log(data.data.name);}, function(){console.log("error")});
             $http.post('http://localhost:8081/api/v1/users/get_workouts', {"token": token}).then(function(data){$scope.workouts = data.data; console.log(data);}, function(){console.log("error")});
 
