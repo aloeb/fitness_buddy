@@ -211,7 +211,10 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                   title: event.summary,
                   endsAt: new Date(Date.parse(event.end.dateTime)),
                   startsAt: new Date(Date.parse(event.start.dateTime)),
-                  color: "red",
+                  color: { // can also be calendarConfig.colorTypes.warning for shortcuts to the deprecated event types
+                    primary: '#686868', // the primary event color (should be darker than secondary)
+                    secondary: '#d1e8ff' // the secondary event color (should be lighter than primary)
+                  },
                   draggable: true,
                   resizable: true,
                   actions: actions
@@ -230,7 +233,10 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                   title: "Possible workout time!",
                   startsAt: new Date(Date.parse(time)),
                   endsAt: new Date(Date.parse(time)+(1000*60*90)),
-                  color: "blue",
+                  color: { // can also be calendarConfig.colorTypes.warning for shortcuts to the deprecated event types
+                    primary: '#686868', // the primary event color (should be darker than secondary)
+                    secondary: '#e2a1a1' // the secondary event color (should be lighter than primary)
+                  },
                   draggable: true,
                   resizable: true,
                   type: 'suggestion'
