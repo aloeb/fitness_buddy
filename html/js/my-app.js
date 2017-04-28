@@ -61,7 +61,7 @@ myApp.onPageInit('login', function(page){
     //     responsive: true
     // });
 });
-angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate', 'angularMoment'])
+angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate', 'angularMoment', 'markau.timer'])
     .config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode({
           enabled: true,
@@ -109,6 +109,8 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
           //These variables MUST be set as a minimum for the calendar to work
           $scope.viewDate = new Date();
           $scope.calendarView = 'week';
+          $scope.time = 300;
+          $scope.status = 'notstarted';
           var actions = [{
                 label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
                 onClick: function(args) {
@@ -125,8 +127,8 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                 {
                   title: 'An event',
                   color: 'red',
-                  startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
-                  endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
+                  startsAt: moment().startOf('week').add(2, 'days').add(8, 'hours').toDate(),
+                  endsAt: moment().startOf('week').add(2, 'days').add(9, 'hours').toDate(),
                   draggable: true,
                   resizable: true,
                   actions: actions
