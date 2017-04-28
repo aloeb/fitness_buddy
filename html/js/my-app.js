@@ -124,6 +124,10 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
               }];
               // console.log(moment().startOf('week').add(1, 'week').add(9, 'hours').toDate());
               $scope.events = [];
+              $scope.workout = {};
+              $scope.workout.name = "";
+              $scope.workout.start = "2017-04-26T18:00";
+              $scope.workout.end = "2017-04-26T19:00";
 
               $scope.cellIsOpen = true;
 
@@ -181,6 +185,10 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                     $scope.viewDate = date;
                   }
                 }
+              }
+
+              $scope.workoutSubmit = function(){
+                console.log($scope.workout.start);
               }
 
           console.log(vm);

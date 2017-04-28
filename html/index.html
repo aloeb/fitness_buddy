@@ -256,7 +256,7 @@
                                 <div class="item-inner">
                                   <div class="item-title label">Workout Name:</div>
                                   <div class="item-input">
-                                    <input type="text" placeholder="YOUR WORKOUT" class="">
+                                    <input ng-model="workout.name" type="text" placeholder="YOUR WORKOUT" class="">
                                   </div>
                                 </div>
                               </div>
@@ -269,7 +269,7 @@
                                 <div class="item-inner">
                                   <div class="item-title label">Start Time</div>
                                   <div class="item-input">
-                                    <input type="datetime-local" placeholder="Workout Date &amp; Time" value = "2017-04-26T18:00">
+                                    <input ng-model="workout.start" type="datetime-local" placeholder="Workout Date &amp; Time" value ="2017-04-26T18:00">
                                   </div>
                                 </div>
                               </div>
@@ -279,15 +279,15 @@
                                 <div class="item-inner">
                                   <div class="item-title label">End Time</div>
                                   <div class="item-input">
-                                    <input type="datetime-local" placeholder="Workout Date &amp; Time" value = "2017-04-26T19:00">
+                                    <input ng-model="workout.end" type="datetime-local" placeholder="Workout Date &amp; Time" value = "2017-04-26T19:00">
                                   </div>
                                 </div>
                               </div>
                             </li>
                           </ul>
+                          <button ng-click="workoutSubmit()">Save Workout</button>
                         </form>
-
-
+                        <pre>workout = {{workout | json}}</pre>
                      </div>
                   </div>
                </div>
