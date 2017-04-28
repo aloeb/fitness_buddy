@@ -187,10 +187,6 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
                 }
               }
 
-              $scope.workoutSubmit = function(){
-                console.log($scope.workout.start);
-              }
-
           console.log(vm);
             var token = $cookies.get('token')
             if (!token) {
@@ -261,6 +257,27 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
             $scope.import_cal = function() {
                 window.location.href = "http://localhost:8081/api/v1/users/auth_google?state=" + $scope.token
             }
+
+            $scope.get_rec_workouts = function() {
+                console.log("yo")
+                $http.post('http://localhost:8081/api/v1/users/get_routines', {"token": token, "filters": { "rec": true }}).then(function(data){
+                  console.log(data.data[0]._id)
+                  $scope.workout.name = data.data[0]._id
+                }, function(){
+                  console.log("error")
+                });
+              }
+
+              $scope.workoutSubmit = function(){
+                console.log($scope.workout.start);
+                $http.post('http://localhost:8081/api/v1/users/schedule_workout', {"token": token, "date": $scope.workout.start, "workout": $scope.workout.name}).then(function(data){
+                  console.log(data)
+                }, function(){
+                  console.log("error")
+                });
+              }
+
+              $scope.get_rec_workouts()
             // console.log($username);
             // console.log($password);
         }
