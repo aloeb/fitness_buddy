@@ -236,8 +236,8 @@ Returns the "date" completed, the "name" of the workout, and the
 router.route('/share/workout').post((req, res) => {
     workout_id = req.body.workout
     user_id = req.body.user
-    corec.share_workout(user_id, workout_id, (obj)=> {
-        req.status(200).json(obj)
+    corec_data.share_workout(user_id, workout_id, (obj)=> {
+        res.status(200).json(obj)
     })
 })
 
