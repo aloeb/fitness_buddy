@@ -145,6 +145,8 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
               $scope.eventClicked = function(event) {
                 if (event.type == 'suggestion') {
                   console.log("hello world")
+                  $scope.workout.start = event.startsAt
+                  $scope.workout.end = event.endsAt
                 } else {
                   alert.show('Clicked', event);
                 }
@@ -202,6 +204,7 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
             next_week = new Date(Date.now() + (1000*60*60*24*7))
             $http.post('http://localhost:8081/api/v1/users/get_calendar', {"token": token, "start_time": today, "end_time": next_week}).then(function(data){
               $scope.googleCalendar = data;
+              console.log(data)
               data.data.events.forEach((event) => {
                 $scope.events.push({
                   title: event.summary,
@@ -260,7 +263,7 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
 
             $scope.get_rec_workouts = function() {
                 console.log("yo")
-                $http.post('http://localhost:8081/api/v1/users/get_routines', {"token": token, "filters": { "rec": true }}).then(function(data){
+                $http.post('http://localhost:8081/api/v1/users/get_routines', {"token": token, "filters": { "tags": ['legs', 'core'] }}).then(function(data){
                   console.log(data.data[0]._id)
                   $scope.workout.name = data.data[0]._id
                 }, function(){

@@ -235,19 +235,25 @@ corec.get_routines = function(user_id, filters, cb) {
 					}
 				})
 				if ('routine' in rec1) {
-					rec1.routine.tags.forEach((tag) => {
-						compare.push(tag)
-					})
+					if (rec1.routine) {
+						rec1.routine.tags.forEach((tag) => {
+							compare.push(tag)
+						})
+					}
 				}
 				if ('routine' in rec2) {
-					rec2.routine.tags.forEach((tag) => {
-						compare.push(tag)
-					})
+					if (rec2.routine) {
+						rec2.routine.tags.forEach((tag) => {
+							compare.push(tag)
+						})
+					}
 				}
 				if ('routine' in rec3) {
-					rec3.routine.tags.forEach((tag) => {
-						compare.push(tag)
-					})
+					if (rec3.routine) {
+						rec3.routine.tags.forEach((tag) => {
+							compare.push(tag)
+						})
+					}
 				}
 				query['tags'] = { $in: compare }
 				date = null
