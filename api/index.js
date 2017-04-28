@@ -220,7 +220,7 @@ router.route('/users/share_workout').post((req,res) => {
         if (err) {
             res.status(200).json({success: false})
         }
-        res.status(200).json({workout: req.body.workout 
+        res.status(200).json({workout: req.body.workout, 
                               user: user._id})
     })
 })
