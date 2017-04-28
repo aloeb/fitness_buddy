@@ -20,7 +20,7 @@ var calendar_data = require('./calendar.js')
 
 // This will be called before any route is called. We can do authentication stuff here
 router.use((req, res, next) => {
-    if (req.url.substring(0,14) === '/auth/facebook') {
+    if (req.url.substring(0,14) === '/auth/facebook' || req.url.substring(0,6) === '/share') {
         next();
     } else {
         var token = req.body.token
@@ -204,6 +204,41 @@ router.route('/users/get_workouts').post((req, res) => {
     corec_data.get_workouts(req.id, (workouts) => {
         res.status(200).json(workouts)
     });
+})
+
+/*
+Call this at the end of a workout to get the workout id and the user id
+to pass to /share/workout when you want to get the info for the share 
+screen.
+
+Takes a body parameter "workout" with the workout id
+
+Returns the workout id as "workout" and the user id as "user"
+*/
+router.route('/users/share_workout').post((req,res) => {
+    User.findOne({'fb_id': req.id}, (err, user) => {
+        if (err) {
+            res.status(200).json({success: false})
+        }
+        res.status(200).json({workout: req.body.workout 
+                              user: user._id})
+    })
+})
+
+/*
+Doesn't require authentication
+
+Send "workout" and "user" in the body
+
+Returns the "date" completed, the "name" of the workout, and the 
+"user_name" of the user
+*/
+router.route('/share/workout').post((req, res) => {
+    workout_id = req.body.workout
+    user_id = req.body.user
+    corec.share_workout(user_id, workout_id, (obj)=> {
+        req.status(200).json(obj)
+    })
 })
 
 /*
