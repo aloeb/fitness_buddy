@@ -210,7 +210,7 @@ angular.module('myApp', ['ngCookies', 'mwl.calendar', 'ui.bootstrap', 'ngAnimate
             }, function(){
               console.log("error")
             });
-            later_today = new Date(Date.now() + 1000*60*60)
+            later_today = new Date(Date.now())
             later_today.setHours(24,0,0,0)
             $http.post('http://localhost:8081/api/v1/users/get_rec_workout_times', {"token": token, "start_time": today, "end_time": later_today}).then(function(data){
               $scope.googleCalendar = data; 
